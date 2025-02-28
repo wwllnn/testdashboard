@@ -1,0 +1,88 @@
+import React, { useState } from 'react'
+import Image from "next/image";
+import { Input } from "@/components/ui/input";
+
+
+import { sampletestdata }  from '../lib/data.js'
+
+type testQuestiondProps = {
+    module: number,
+    number: number;
+    answers: any[],
+    handleA: (option: string) => void;
+};
+
+
+
+const TestQuestion: React.FC<testQuestiondProps> = ({module, number, answers, handleA}) => {
+    const [text, setText] = useState("");
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+        const value = e.target.value;
+        if (/^[-0-9./]*$/.test(value)) {
+            setText(value);
+            handleA(value);
+        }
+
+    }
+
+  return (
+    <div className='text-gray-100 flex py-5 px-5 my-5 mx-5 bg-gray-900 rounded-lg h-[60vh]'>
+        <div className='py-5 px-5 flex-1'>
+            <div className='whitespace-pre-wrap'>{number + 1}. {sampletestdata[module][number].passage}</div>
+            {sampletestdata[module][number].img && <Image
+                src="/example.jpg" // Replace with your image path
+                alt="Example"
+                width={300}
+                height={200}
+                className="rounded-lg"
+            />
+            }
+        </div>
+
+        <div className='w-[1px] absolute left-1/2 -translate-x-1/2 bg-gray-100 h-[55vh]'>
+        </div>
+
+        <div className='py-5 px-5 ml-5 flex-1'>
+            <div className=''>
+                <div className='mb-5'>{sampletestdata[module][number].question}</div>
+                {
+                    ('fr' in sampletestdata[module][number]) ? 
+
+                    <Input type="text" value={text} placeholder="Enter text..." onChange={handleChange}
+                    className="w-40 text-sm p-2 text-black" /> :
+
+                    <>
+                    <div onClick={() => handleA('A')} className={`border-2 border-gray-100 rounded-2xl mb-2 p-2 flex items-center cursor-pointer ${answers[number] == 'A' ? 'bg-gray-100 text-black hover:bg-gray-100' : 'text-gray-100 hover:bg-gray-800'}`}>
+                        <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-black
+                            text-xl flex-shrink-0 mr-4 ${answers[number] == 'A' ? 'bg-gray-100 text-black border-black' : 'text-gray-100 border-gray-100'}`}>A</div>
+                        <div>{sampletestdata[module][number].choice1}</div>
+                    </div>
+                    <div onClick={() => handleA('B')} className={`border-2 border-gray-100 rounded-2xl mb-2 p-2 flex items-center cursor-pointer ${answers[number] == 'B' ? 'bg-gray-100 text-black hover:bg-gray-100' : 'text-gray-100 hover:bg-gray-800'}`}>
+                        <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-black
+                            text-xl flex-shrink-0 mr-4 ${answers[number] == 'B' ? 'bg-gray-100 text-black border-black' : 'text-gray-100 border-gray-100'}`}>B</div>
+                        <div>{sampletestdata[module][number].choice2}</div>
+                    </div>
+                    <div onClick={() => handleA('C')} className={`border-2 border-gray-100 rounded-2xl mb-2 p-2 flex items-center cursor-pointer ${answers[number] == 'C' ? 'bg-gray-100 text-black hover:bg-gray-100' : 'text-gray-100 hover:bg-gray-800'}`}>
+                        <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-black
+                            text-xl flex-shrink-0 mr-4 ${answers[number] == 'C' ? 'bg-gray-100 text-black border-black' : 'text-gray-100 border-gray-100'}`}>C</div>
+                        <div>{sampletestdata[module][number].choice3}</div>
+                    </div>
+                    <div onClick={() => handleA('D')} className={`border-2 border-gray-100 rounded-2xl mb-2 p-2 flex items-center cursor-pointer ${answers[number] == 'D' ? 'bg-gray-100 text-black hover:bg-gray-100' : 'text-gray-100 hover:bg-gray-800'}`}>
+                        <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-black
+                            text-xl flex-shrink-0 mr-4 ${answers[number] == 'D' ? 'bg-gray-100 text-black border-black' : 'text-gray-100 border-gray-100'}`}>D</div>
+                        <div>{sampletestdata[module][number].choice4}</div>
+                    </div>
+                    </>
+                }
+
+            </div>
+        </div>
+
+
+    </div>
+  )
+}
+
+export default TestQuestion
