@@ -6,7 +6,10 @@ import { useAuthStore } from "@/lib/store";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
+
 import TestScores from "@/components/TestScores";
+import TestsInProgress from "@/components/TestsInProgress";
 
 export default function Home() {
   const { listenForAuthChanges, userUid } = useAuthStore();
@@ -14,14 +17,14 @@ export default function Home() {
   useEffect(() => {
     listenForAuthChanges();
   }, [listenForAuthChanges]);
-
+  
   return (
-    <div className="flex flex-col bg-gray-100 text-gray-900 font-sans">
+    <div className="flex flex-col h-screen bg-gray-100 text-gray-900 font-sans">
       {/* Hero Section for Non-Logged-In Users */}
       {!userUid && (
         <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-center py-20 px-6">
-          <h1 className="text-4xl font-bold mb-6">Welcome to Education One!</h1>
-          <p className="text-xl mb-8">Track your test scores and improve with ease.</p>
+          <h1 className="text-4xl font-bold mb-6">Welcome to Education One's Diagnostic Tool</h1>
+          <p className="text-xl mb-8">Sign in to take a free test and review your strengths and weaknesses!</p>
           <div className="flex justify-center gap-4">
             <Link href="/login">
               <Button className="bg-white text-blue-600 hover:bg-gray-100 font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300">
@@ -41,14 +44,17 @@ export default function Home() {
       {userUid && (
         <section className="container mx-auto py-16 px-6 text-center flex justify-center">
           <div className="bg-white max-w-4xl text-gray-800 p-8 rounded-xl shadow-2xl">
-            <h1 className="text-3xl font-bold mb-6">Welcome to Your Dashboard</h1>
+            <h1 className="text-3xl font-bold mb-6">Digital SAT Diagnostic Tool</h1>
             <div className="">
-              <TestScores />
+            <TestsInProgress />
+            <TestScores />
+            
             </div>
             <div className="mt-6">
               <Link href="/test">
                 <Button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300">
-                  Go to Test Page
+                  Go to Test Page 
+                  <FaArrowRight />
                 </Button>
               </Link>
             </div>
@@ -57,19 +63,42 @@ export default function Home() {
       )}
 
       {/* Features Section */}
+      {!userUid && (
       <section className="container mx-auto py-16 px-6">
-        <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">Why Choose Us?</h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          {["Track Progress", "Get Insights", "Improve Faster"].map((feature, index) => (
-            <Card key={index} className="bg-white shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 rounded-xl">
-              <CardContent className="p-8 text-center">
-                <h3 className="text-2xl font-semibold text-gray-800 mb-4">{feature}</h3>
-                <p className="text-gray-600">Our advanced analytics help you achieve better results.</p>
-              </CardContent>
-            </Card>
-          ))}
+        <h2 className="text-3xl font-bold text-center mb-12 text-gray-700">The Number One Place For SAT</h2>
+        <div className="flex justify-center gap-10">
+          
+          {/* Card 1: Track Progress */}
+          <Card className="bg-white shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 rounded-xl max-w-[400px] cursor-default">
+            <CardContent className="p-8 text-center">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4 ">📈 Track Progress</h3>
+              <p className="text-gray-600">Monitor your test scores over time with our intuitive dashboard.</p>
+            </CardContent>
+          </Card>
+
+          {/* Card 2: Get Insights */} 
+          <Card className="bg-white shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 rounded-xl max-w-[400px] cursor-default">
+            <CardContent className="p-8 text-center">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">🔎 Get Insights</h3>
+              <p className="text-gray-600">Identify strengths and weaknesses with detailed analytics.</p>
+            </CardContent>
+          </Card>
+
+          {/* Card 3: Improve Faster */}
+
         </div>
       </section>
+      )}
+    
+      <section className="container mx-auto py-12 px-40">
+      <Card className="bg-white hover:shadow-2xl transform hover:scale-105 transition duration-300 cursor-default">
+            <CardContent className="p-8 text-center">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">🚀 Improve Faster</h3>
+              <p className="text-gray-600">Need more help? Email or call our professional SAT team with 2 decades of test taking experience to go through any question and receive recommendations to boost your performance efficiently.</p>
+            </CardContent>
+          </Card>
+      </section>
+
 
       {/* FAQ Section */}
       <section className="container mx-auto py-16 px-6">
@@ -104,7 +133,7 @@ export default function Home() {
             <a href="#" className="text-2xl hover:text-gray-400 transition duration-300"><FaTwitter /></a>
             <a href="#" className="text-2xl hover:text-gray-400 transition duration-300"><FaInstagram /></a>
           </div>
-          <p className="text-sm text-gray-400">&copy; {new Date().getFullYear()} Your App. All rights reserved.</p>
+          <p className="text-sm text-gray-400">&copy; {new Date().getFullYear()} Education One. All rights reserved.</p>
         </div>
       </footer>
     </div>

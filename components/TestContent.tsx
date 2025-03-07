@@ -19,8 +19,11 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-    DialogClose
+    DialogClose,
+    
   } from "@/components/ui/dialog"
+import { toast } from "sonner";
+
 
 
 const TestContent = () => {
@@ -59,12 +62,7 @@ const TestContent = () => {
         const newAnswers = [...answers4];
         newAnswers[currentQuestion] = option;
         setAnswers4(newAnswers);
-    }
-
-    console.log(answers);
-    console.log(answers2);
-    console.log(answers3);
-    console.log(answers4);
+    }  
     
     const calculateScore = () => {
         let calculatedScore = 0;
@@ -128,13 +126,17 @@ const TestContent = () => {
                 answers2,
                 answers3,
                 answers4,
-                scores
+                scores,
+                test: 'SAT 1',
+                complete: true
             });
+            toast.success("Test submitted successfully!");
             router.push('/');
             console.log("Document written with ID: ", docRef.id);
 
         } catch (error) {
           console.error("Error adding document: ", error);
+          toast.error("Error submitting test. Please try again.");
         }
 
     }
@@ -156,38 +158,45 @@ const TestContent = () => {
     }  
     */
 
-    return (
-        <>
-        <TestBar module={module}/>
+    const handleSave = () => {
+        toast.success('Test Saved')
+    }
 
-        <div className='flex justify-center'>
-            <div className='justify-center align-center'>
-                {module == 0 && sampletestdata[0].map((item, index) =>
-                <Button onClick={() => setCurrentQuestion(index)} key={index} className={`inline-flex items-center justify-center w-8 h-8 border-2 
-                border-white rounded-full text-lg mx-2 text-white text-sm p-0 ${answers[index] != null ? 'bg-white text-gray-900' : ''}`}>
-                    {index + 1}
-                </Button>
-                )}
-                {module == 1 && sampletestdata[1].map((item, index) =>
-                <Button onClick={() => setCurrentQuestion(index)} key={index} className={`inline-flex items-center justify-center w-8 h-8 border-2 
-                border-white rounded-full text-lg mx-2 text-white text-sm p-0 ${answers2[index] != null ? 'bg-white text-gray-900' : ''}`}>
-                    {index + 1}
-                </Button>
-                )}
-                {module == 2 && sampletestdata[2].map((item, index) =>
-                <Button onClick={() => setCurrentQuestion(index)} key={index} className={`inline-flex items-center justify-center w-8 h-8 border-2 
-                border-white rounded-full text-lg mx-2 text-white text-sm p-0 ${answers3[index] != null ? 'bg-white text-gray-900' : ''}`}>
-                    {index + 1}
-                </Button>
-                )}
-                {module == 3 && sampletestdata[3].map((item, index) =>
-                <Button onClick={() => setCurrentQuestion(index)} key={index} className={`inline-flex items-center justify-center w-8 h-8 border-2 
-                border-white rounded-full text-lg mx-2 text-white text-sm p-0 ${answers4[index] != null ? 'bg-white text-gray-900' : ''}`}>
-                    {index + 1}
-                </Button>
-                )}
+    return (
+        <div className='bg-gray-800 h-full'>
+        <TestBar module={module}/>
+        <div className='flex justify-center items-center'>
+            <div className='flex justify-center mr-10'>
+                <div className='justify-center align-center'>
+                    {module == 0 && sampletestdata[0].map((item, index) =>
+                    <Button onClick={() => setCurrentQuestion(index)} key={index} className={`inline-flex items-center justify-center w-8 h-8 border-2 
+                    border-white rounded-full text-lg mx-2 text-white text-sm p-0 ${answers[index] != null ? 'bg-white text-gray-900' : ''}`}>
+                        {index + 1}
+                    </Button>
+                    )}
+                    {module == 1 && sampletestdata[1].map((item, index) =>
+                    <Button onClick={() => setCurrentQuestion(index)} key={index} className={`inline-flex items-center justify-center w-8 h-8 border-2 
+                    border-white rounded-full text-lg mx-2 text-white text-sm p-0 ${answers2[index] != null ? 'bg-white text-gray-900' : ''}`}>
+                        {index + 1}
+                    </Button>
+                    )}
+                    {module == 2 && sampletestdata[2].map((item, index) =>
+                    <Button onClick={() => setCurrentQuestion(index)} key={index} className={`inline-flex items-center justify-center w-8 h-8 border-2 
+                    border-white rounded-full text-lg mx-2 text-white text-sm p-0 ${answers3[index] != null ? 'bg-white text-gray-900' : ''}`}>
+                        {index + 1}
+                    </Button>
+                    )}
+                    {module == 3 && sampletestdata[3].map((item, index) =>
+                    <Button onClick={() => setCurrentQuestion(index)} key={index} className={`inline-flex items-center justify-center w-8 h-8 border-2 
+                    border-white rounded-full text-lg mx-2 text-white text-sm p-0 ${answers4[index] != null ? 'bg-white text-gray-900' : ''}`}>
+                        {index + 1}
+                    </Button>
+                    )}
+                </div>
             </div>
+            <Button onClick={handleSave}>Save</Button>
         </div>
+
         <div>
             {module == 0 && <TestQuestion module={module} number={currentQuestion} answers={answers} handleA={handleAnswer}></TestQuestion>}
             {module == 1 && <TestQuestion module={module} number={currentQuestion} answers={answers2} handleA={handleAnswer2}></TestQuestion>}
@@ -288,7 +297,7 @@ const TestContent = () => {
  
         </div>
 
-        </>
+        </div>
   )
 }
 

@@ -10,6 +10,9 @@ export default {
   theme: {
   	extend: {
   		colors: {
+			bronze: '#cd7f32',  // Bronze color
+			silver: '#c0c0c0',   // Silver color
+			gold: '#ffd700',     // Gold color
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

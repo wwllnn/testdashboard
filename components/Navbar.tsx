@@ -15,7 +15,6 @@ const Navbar = () => {
         <Link href='/'>
             <Image src={logo} alt='logo' className='w-36 align-center'/>
         </Link>
-        <h1 className='text-white font-bold absolute left-1/2 transform -translate-x-1/2'>Digital SAT Diagnostic Test</h1>
         <div className="flex items-center space-x-4">
           {user ? (
             <>
@@ -30,7 +29,7 @@ const Navbar = () => {
           ) : (
             <a
               href="/login"
-              className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-700"
+              className="bg-blue-400 px-4 py-2 rounded hover:bg-blue-700 text-white"
             >
               Login
             </a>

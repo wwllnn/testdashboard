@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 
-const ScoresPage = () => {
+const TestsInProgress = () => {
   const { scores, loading, error, fetchScores, setSelectedTest, userUid } = useAuthStore();
   const router = useRouter();
 
@@ -18,7 +18,7 @@ const ScoresPage = () => {
 
   return (
     <div className="p-6 text-white">
-      <h1 className="text-2xl font-bold mb-6 text-black">📊 Recent Test Scores</h1>
+      <h1 className="text-2xl font-bold mb-6 text-black">⌛️ Tests In Progress</h1>
       <div className="overflow-x-auto">
         <div className="flex gap-4 w-max pb-2">
           {scores.map((score, index) => (
@@ -27,11 +27,10 @@ const ScoresPage = () => {
               router.push(`/breakdown/${index}`);
             }}>
               <CardHeader>
-                <CardTitle>{score.scores[0] * 10 + 400}</CardTitle>
+                <CardTitle>SAT Test 1</CardTitle>
               </CardHeader>
               <CardContent>
                 <p><strong>Date:</strong> {new Date(score.date.seconds * 1000).toLocaleDateString()}</p>
-                <p>SAT Test 1</p>
               </CardContent>
             </Card>
           ))}
@@ -41,4 +40,4 @@ const ScoresPage = () => {
   );
 };
 
-export default ScoresPage;
+export default TestsInProgress;

@@ -16,10 +16,10 @@ type TestBarProps = {
 
 // Define time limits (in seconds) for each module
 const MODULE_TIME_LIMITS: { [key: number]: number } = {
-  0: 11 * 60 + 11, // Module 0: 11 minutes and 11 seconds
-  1: 15 * 60,      // Module 1: 15 minutes
-  2: 20 * 60,      // Module 2: 20 minutes
-  3: 10 * 60,      // Module 3: 10 minutes
+  0: 32 * 60, // Module 0: 11 minutes and 11 seconds
+  1: 32 * 60,      // Module 1: 15 minutes
+  2: 35 * 60,      // Module 2: 20 minutes
+  3: 35 * 60,      // Module 3: 10 minutes
 };
 
 const TestBar: React.FC<TestBarProps> = ({ module }) => {
@@ -59,7 +59,7 @@ const TestBar: React.FC<TestBarProps> = ({ module }) => {
 
   return (
     <>
-      <div className='flex justify-between items-center px-10 py-2 mb-4 text-white bg-blue-900'>
+      <div className='flex justify-between items-center px-10 py-2 mb-4 text-white bg-gray-800'>
         <div>
           <h1 className='py-2 text-lg font-semibold'>
             Section 1, Module {module + 1}: Reading and Writing
@@ -72,13 +72,38 @@ const TestBar: React.FC<TestBarProps> = ({ module }) => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Directions</DialogTitle>
-                <DialogDescription className='py-5 text-slate-700'>
+                <DialogTitle className='text-2xl'>Directions</DialogTitle>
+                {(module < 3) && <><DialogDescription className='py-5 text-slate-700 text-md'>
                   The questions in this section address a number of important reading and writing skills. Each question includes one or more passages, which may include a table or graph. Read each passage and question carefully, and then choose the best answer to the question based on the passage(s).
                 </DialogDescription>
-                <DialogDescription className='text-slate-700'>
+                
+                <DialogDescription className='text-slate-700 text-lg'>
                   All questions in this section are multiple-choice with four answer choices. Each question has a single best answer.
-                </DialogDescription>
+                </DialogDescription></>}
+                {(module >= 3) && (
+  <DialogDescription className="py-5 text-slate-700 text-md">
+    The questions in this section address a number of important math skills.<br /><br />
+    Use of a calculator is permitted for all questions. A reference sheet, calculator, and these directions can be accessed throughout the test.<br /><br />
+    
+    Unless otherwise indicated:<br />
+    - All variables and expressions represent real numbers.<br />
+    - Figures provided are drawn to scale.<br />
+    - All figures lie in a plane.<br /><br />
+
+    For multiple-choice questions, solve each problem and choose the correct answer from the choices provided. Each multiple-choice question has a single correct answer.<br /><br />
+
+    For student-produced response questions, solve each problem and enter your answer as described below.<br /><br />
+
+    - If you find more than one correct answer, enter only one answer.<br />
+    - You can enter up to 5 characters for a positive answer and up to 6 characters (including the negative sign) for a negative answer.<br />
+    - If your answer is a fraction that doesn’t fit in the provided space, enter the decimal equivalent.<br />
+    - If your answer is a decimal that doesn’t fit in the provided space, enter it by truncating or rounding at the fourth digit.<br />
+    - If your answer is a mixed number, enter it as an improper fraction (7/2) or its decimal equivalent (3.5).<br />
+    - Don’t enter symbols such as a percent sign, comma, or dollar sign.
+  </DialogDescription>
+)}
+
+
               </DialogHeader>
             </DialogContent>
           </Dialog>

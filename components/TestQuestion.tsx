@@ -27,18 +27,27 @@ const TestQuestion: React.FC<testQuestiondProps> = ({module, number, answers, ha
 
     }
 
-  return (
+    console.log(module, number)
+    return (
     <div className='text-gray-100 flex py-5 px-5 my-5 mx-5 bg-gray-900 rounded-lg h-[60vh]'>
         <div className='py-5 px-5 flex-1'>
             <div className='whitespace-pre-wrap'>{number + 1}. {sampletestdata[module][number].passage}</div>
+            <div className='max-w-[650px] max-auto relative m-4 mx-auto'>
             {sampletestdata[module][number].img && <Image
-                src="/example.jpg" // Replace with your image path
-                alt="Example"
-                width={300}
-                height={200}
-                className="rounded-lg"
+                src={`/Q${number+1}Mod${module+1}.png`}// Replace with your image path
+                layout="responsive"
+                alt="data"
+                width={1200} // The original width of the image
+                height={800} // The original height of the image
+                style={{
+                  objectFit: 'contain',
+                  maxHeight: '500px',
+                  width: '100%',
+                }}
+
             />
             }
+            </div>
         </div>
 
         <div className='w-[1px] absolute left-1/2 -translate-x-1/2 bg-gray-100 h-[55vh]'>
