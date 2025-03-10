@@ -10,8 +10,8 @@ const Navbar = () => {
   const { user, signOut } = useAuth();
 
   return (
-    <div className='bg-primary dark:bg-slate-700 py-5 px-10
-    flex justify-between items-center'>
+    <div className='bg-blue-800 dark:bg-slate-700 py-5 px-10
+    flex justify-between items-center border-b-4 border-gray-100 shadow-[0_4px_8px_rgba(0,0,0,0.3)] z-10'>
         <Link href='/'>
             <Image src={logo} alt='logo' className='w-36 align-center'/>
         </Link>
@@ -21,7 +21,7 @@ const Navbar = () => {
               <span className="text-lg text-white">Hello, {user.displayName || user.email}</span>
               <button
                 onClick={signOut}
-                className="bg-red-500 px-4 py-2 rounded hover:bg-red-700"
+                className="bg-red-700 px-4 py-2 rounded hover:bg-red-600 text-white"
               >
                 Log Out
               </button>
@@ -29,7 +29,7 @@ const Navbar = () => {
           ) : (
             <a
               href="/login"
-              className="bg-blue-400 px-4 py-2 rounded hover:bg-blue-700 text-white"
+              className="bg-white px-4 py-2 rounded hover:bg-gray-100 text-blue-600"
             >
               Login
             </a>

@@ -29,7 +29,7 @@ const TestQuestion: React.FC<testQuestiondProps> = ({module, number, answers, ha
 
     console.log(module, number)
     return (
-    <div className='text-gray-100 flex py-5 px-5 my-5 mx-5 bg-gray-900 rounded-lg h-[60vh]'>
+    <div className='text-gray-100 flex p-6 my-5 mx-48 bg-gray-800 rounded-lg h-[65vh] shadow-lg text-lg'>
         <div className='py-5 px-5 flex-1'>
             <div className='whitespace-pre-wrap'>{number + 1}. {sampletestdata[module][number].passage}</div>
             <div className='max-w-[650px] max-auto relative m-4 mx-auto'>
@@ -41,7 +41,7 @@ const TestQuestion: React.FC<testQuestiondProps> = ({module, number, answers, ha
                 height={800} // The original height of the image
                 style={{
                   objectFit: 'contain',
-                  maxHeight: '500px',
+                  maxHeight: '450px',
                   width: '100%',
                 }}
 
@@ -50,7 +50,7 @@ const TestQuestion: React.FC<testQuestiondProps> = ({module, number, answers, ha
             </div>
         </div>
 
-        <div className='w-[1px] absolute left-1/2 -translate-x-1/2 bg-gray-100 h-[55vh]'>
+        <div className='w-[1px] absolute left-1/2 -translate-x-1/2 bg-gray-100 h-[60vh]'>
         </div>
 
         <div className='py-5 px-5 ml-5 flex-1'>
@@ -63,22 +63,22 @@ const TestQuestion: React.FC<testQuestiondProps> = ({module, number, answers, ha
                     className="w-40 text-sm p-2 text-black" /> :
 
                     <>
-                    <div onClick={() => handleA('A')} className={`border-2 border-gray-100 rounded-2xl mb-2 p-2 flex items-center cursor-pointer ${answers[number] == 'A' ? 'bg-gray-100 text-black hover:bg-gray-100' : 'text-gray-100 hover:bg-gray-800'}`}>
+                    <div onClick={() => handleA('A')} className={`border-2 border-gray-100 rounded-2xl mr-10 mb-4 p-4 flex items-center cursor-pointer ${answers[number] == 'A' ? 'bg-gray-100 text-black hover:bg-gray-100' : 'hover:bg-gray-700 text-gray-100 hover:bg-gray-800'}`}>
                         <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-black
-                            text-xl flex-shrink-0 mr-4 ${answers[number] == 'A' ? 'bg-gray-100 text-black border-black' : 'text-gray-100 border-gray-100'}`}>A</div>
+                            text-xl flex-shrink-0 mr-4 ${answers[number] == 'A' ? 'bg-gray-100 text-black border-black' : ' text-gray-100 border-gray-100'}`}>A</div>
                         <div>{sampletestdata[module][number].choice1}</div>
                     </div>
-                    <div onClick={() => handleA('B')} className={`border-2 border-gray-100 rounded-2xl mb-2 p-2 flex items-center cursor-pointer ${answers[number] == 'B' ? 'bg-gray-100 text-black hover:bg-gray-100' : 'text-gray-100 hover:bg-gray-800'}`}>
+                    <div onClick={() => handleA('B')} className={`border-2 border-gray-100 rounded-2xl mr-10 mb-4 p-4 flex items-center cursor-pointer ${answers[number] == 'B' ? 'bg-gray-100 text-black hover:bg-gray-100' : 'hover:bg-gray-700 text-gray-100 hover:bg-gray-800'}`}>
                         <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-black
-                            text-xl flex-shrink-0 mr-4 ${answers[number] == 'B' ? 'bg-gray-100 text-black border-black' : 'text-gray-100 border-gray-100'}`}>B</div>
+                            text-xl flex-shrink-0 mr-4 ${answers[number] == 'B' ? 'bg-gray-100 text-black border-black' : 'hover:bg-gray-700 text-gray-100 border-gray-100'}`}>B</div>
                         <div>{sampletestdata[module][number].choice2}</div>
                     </div>
-                    <div onClick={() => handleA('C')} className={`border-2 border-gray-100 rounded-2xl mb-2 p-2 flex items-center cursor-pointer ${answers[number] == 'C' ? 'bg-gray-100 text-black hover:bg-gray-100' : 'text-gray-100 hover:bg-gray-800'}`}>
+                    <div onClick={() => handleA('C')} className={`border-2 border-gray-100 rounded-2xl mr-10 mb-4 p-4 flex items-center cursor-pointer ${answers[number] == 'C' ? 'bg-gray-100 text-black hover:bg-gray-100' : 'hover:bg-gray-700 text-gray-100 hover:bg-gray-800'}`}>
                         <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-black
                             text-xl flex-shrink-0 mr-4 ${answers[number] == 'C' ? 'bg-gray-100 text-black border-black' : 'text-gray-100 border-gray-100'}`}>C</div>
                         <div>{sampletestdata[module][number].choice3}</div>
                     </div>
-                    <div onClick={() => handleA('D')} className={`border-2 border-gray-100 rounded-2xl mb-2 p-2 flex items-center cursor-pointer ${answers[number] == 'D' ? 'bg-gray-100 text-black hover:bg-gray-100' : 'text-gray-100 hover:bg-gray-800'}`}>
+                    <div onClick={() => handleA('D')} className={`border-2 border-gray-100 rounded-2xl mr-10 mb-4 p-4 flex items-center cursor-pointer ${answers[number] == 'D' ? 'bg-gray-100 text-black hover:bg-gray-100' : 'hover:bg-gray-700 text-gray-100 hover:bg-gray-800'}`}>
                         <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-black
                             text-xl flex-shrink-0 mr-4 ${answers[number] == 'D' ? 'bg-gray-100 text-black border-black' : 'text-gray-100 border-gray-100'}`}>D</div>
                         <div>{sampletestdata[module][number].choice4}</div>

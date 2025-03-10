@@ -4,9 +4,12 @@ import { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 
+
 const ScoresPage = () => {
   const { scores, loading, error, fetchScores, setSelectedTest, userUid } = useAuthStore();
   const router = useRouter();
+
+  const createScore = (r: number, m: number) => r + m;
 
   useEffect(() => {
     if (userUid) fetchScores();
@@ -15,6 +18,8 @@ const ScoresPage = () => {
   if (loading) return <div className="flex justify-center items-center h-screen"><Loader2 className="animate-spin h-8 w-8 text-gray-500" /></div>;
   if (error) return <p className="text-red-500 text-center">{error}</p>;
   if (scores.length === 0) return <p className="text-center text-gray-500 mt-5">No test scores available.</p>;
+
+
 
   return (
     <div className="p-6 text-white">
@@ -26,11 +31,23 @@ const ScoresPage = () => {
               setSelectedTest(score);
               router.push(`/breakdown/${index}`);
             }}>
-              <CardHeader>
-                <CardTitle>{score.scores[0] * 10 + 400}</CardTitle>
+              <CardHeader className='pb-4'>
+                <CardTitle className='text-4xl font-bold'>{score.scores[0] * 10 + 400}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p><strong>Date:</strong> {new Date(score.date.seconds * 1000).toLocaleDateString()}</p>
+              <p>
+                {new Date(score.date.seconds * 1000).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric"
+                })}{" "}
+                <br/>
+                {new Date(score.date.seconds * 1000).toLocaleTimeString("en-US", {
+                  hour: "numeric", // 🔹 Use "numeric" instead of "2-digit" to remove leading zero
+                  minute: "2-digit",
+                  hour12: true
+                })}                
+              </p>
                 <p>SAT Test 1</p>
               </CardContent>
             </Card>

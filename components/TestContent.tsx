@@ -1,12 +1,14 @@
 "use client"
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import TestQuestion from './TestQuestion'
 import TestBar from './TestBar'
 import { sampletestdata } from '@/lib/data'
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc, serverTimestamp, setDoc, doc, updateDoc } from 'firebase/firestore'
+import { useAuthStore } from '@/lib/store';
+
 
 import { useRouter } from 'next/navigation'
 
@@ -27,11 +29,15 @@ import { toast } from "sonner";
 
 
 const TestContent = () => {
+
+    const { selectedTest } = useAuthStore();
+    
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState(Array(27).fill(null));
     const [answers2, setAnswers2] = useState(Array(sampletestdata[1].length).fill(null));
     const [answers3, setAnswers3] = useState(Array(sampletestdata[2].length).fill(null));
     const [answers4, setAnswers4] = useState(Array(sampletestdata[3].length).fill(null));
+    const [currentDoc, setCurrentDoc] = useState('');
 
     const [module, setModule] = useState(0);
     const [score, setScore] = useState(0);
@@ -39,6 +45,20 @@ const TestContent = () => {
 
     const testId = 'Digital SAT Diagnostic';
     const router = useRouter();
+    console.log(selectedTest)
+
+    useEffect(() => {
+        if (selectedTest) {
+            setAnswers(selectedTest.answers || []);
+            setAnswers2(selectedTest.answers2 || []);
+            setAnswers3(selectedTest.answers3 || []);
+            setAnswers4(selectedTest.answers4 || []);
+            setCurrentDoc(selectedTest.docId)
+        }
+    }, [selectedTest]);  // Will run when selectedTest changes
+
+    console.log(currentDoc)
+
 
     const handleAnswer = (option: String) => {
         const newAnswers = [...answers];
@@ -68,9 +88,6 @@ const TestContent = () => {
         let calculatedScore = 0;
         let mathScore = 0;
         let readingScore = 0;
-        let readingGrade = 0;
-        let mathGrade = 0
-        let calculatedGrade = 0;
         let correctQ = [];
         let missedQ = [];
 
@@ -117,53 +134,98 @@ const TestContent = () => {
     
 
     const handleSubmit = async () => {
-        let scores = calculateScore();
+        const scores = calculateScore()
+        console.log(currentDoc)
         try {
-            const docRef = await addDoc(collection(db, "testScores"), {
-                userId: user.uid,
-                date: serverTimestamp(),
-                answers,
-                answers2,
-                answers3,
-                answers4,
-                scores,
-                test: 'SAT 1',
-                complete: true
-            });
-            toast.success("Test submitted successfully!");
+            if (!selectedTest?.docId){
+                const docRef = doc(collection(db, "testScores")); // Reference with custom ID
+                await setDoc(docRef, {
+                    userId: user.uid,
+                    date: serverTimestamp(),
+                    answers,
+                    answers2,
+                    answers3,
+                    answers4,
+                    scores,
+                    test: 'SAT 1',
+                    complete: true,
+                }); // Add or overwrite document
+                await updateDoc(docRef, { docId: docRef.id }); // Now docID exists
+                setCurrentDoc(docRef.id);
+                console.log("Document added with ID:", currentDoc);
+            } else {
+                const docRef = doc(db, "testScores", selectedTest.docId);
+                await updateDoc(docRef, {
+                    userId: user.uid,
+                    date: serverTimestamp(),
+                    answers,
+                    answers2,
+                    answers3,
+                    answers4,
+                    scores,
+                    test: 'SAT 1',
+                    complete: true,
+                    docId: docRef.id
+                })
+
+                console.log("Document updated successfully:", currentDoc);
+            }
+
             router.push('/');
-            console.log("Document written with ID: ", docRef.id);
+            
+          } catch (error) {
+            console.error("Error adding document:", error);
+          }
+    }
+
+    const handleSave = async () => {
+        let scores = [0, 0, 0]; 
+        console.log("Current Doc ID:", currentDoc);
+    
+        try {
+            if (!selectedTest?.docId) {
+                // Create a new document
+                const docRef = await addDoc(collection(db, "testScores"), { // Use addDoc instead of doc + setDoc
+                    userId: user.uid,
+                    date: serverTimestamp(),
+                    answers,
+                    answers2,
+                    answers3,
+                    answers4,
+                    scores,
+                    test: 'SAT 1',
+                    complete: false,
+                });
+    
+                await updateDoc(docRef, { docId: docRef.id }); // Store doc ID inside the document
+                setCurrentDoc(docRef.id); // Update state
+                console.log("Document added with ID:", docRef.id);
+            } else {
+                // Update existing document
+                const docRef = doc(db, "testScores", selectedTest.docId);
+                await updateDoc(docRef, {
+                    userId: user.uid,
+                    date: serverTimestamp(),
+                    answers,
+                    answers2,
+                    answers3,
+                    answers4,
+                    scores,
+                    test: 'SAT 1',
+                    complete: false,
+                });
+                console.log("Document updated successfully:", selectedTest.docId);
+            }
+            toast.success("Test Saved");
 
         } catch (error) {
-          console.error("Error adding document: ", error);
-          toast.error("Error submitting test. Please try again.");
+            console.error("Error saving document:", error);
         }
-
-    }
-
-    /*
-    const saveToFirebase = async (calculatedScore: number) => {
-        if (user) {
-            try {
-                await addDoc(collection(db, 'scores'), {
-                    userId: user.uid,
-                    testId,
-                    score: calculatedScore,
-                    timestamp: new Date(),
-                });
-            } catch (error) {
-                console.error('Error saving score to Firebase:', error);
-            }
-        }
-    }  
-    */
-
-    const handleSave = () => {
-        toast.success('Test Saved')
-    }
+    };
+    
 
     return (
-        <div className='bg-gray-800 h-full'>
+        <div className='bg-gray-900 h-full'>
         <TestBar module={module}/>
         <div className='flex justify-center items-center'>
             <div className='flex justify-center mr-10'>
@@ -194,7 +256,7 @@ const TestContent = () => {
                     )}
                 </div>
             </div>
-            <Button onClick={handleSave}>Save</Button>
+            <Button className='bg-gray-800 hover:bg-gray-700' onClick={handleSave}>Save Progress</Button>
         </div>
 
         <div>
@@ -205,11 +267,11 @@ const TestContent = () => {
 
             <div className='absolute left-1/2 -translate-x-1/2'>
                 {(currentQuestion != 0) &&
-                    <Button className='w-40 py-6 text-xl mr-1' onClick={() => setCurrentQuestion(prev => prev - 1)}><FaLongArrowAltLeft />
+                    <Button className='w-40 py-6 text-xl mr-1 bg-gray-800 hover:bg-gray-700' onClick={() => setCurrentQuestion(prev => prev - 1)}><FaLongArrowAltLeft />
                     Previous</Button>
                 }
                 {(currentQuestion != sampletestdata[module].length - 1) &&
-                    <Button className='w-40 py-6 text-xl ml-1' onClick={() => setCurrentQuestion(prev => prev + 1)}>Next<FaLongArrowAltRight />
+                    <Button className='w-40 py-6 text-xl ml-1 bg-gray-800 hover:bg-gray-700' onClick={() => setCurrentQuestion(prev => prev + 1)}>Next<FaLongArrowAltRight />
                     </Button>
                 }
                 {(module == 0 && currentQuestion == sampletestdata[module].length - 1) &&
@@ -275,7 +337,7 @@ const TestContent = () => {
                 {(module == 3 && currentQuestion == sampletestdata[module].length - 1) &&
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button className='w-40 py-6 text-xl ml-1'>Submit Test<FaLongArrowAltRight />
+                            <Button className='w-40 py-6 text-xl ml-1 bg-gray-800 hover:bg-gray-700'>Submit Test<FaLongArrowAltRight />
                         </Button>
                         </DialogTrigger>
                         <DialogContent>
@@ -286,7 +348,7 @@ const TestContent = () => {
 
                             </DialogDescription>
                             <DialogClose asChild>
-                                <Button onClick={handleSubmit}>Submit Test</Button>
+                                <Button className="" onClick={handleSubmit}>Submit Test</Button>
                             </DialogClose>
                             </DialogHeader>
                         </DialogContent>

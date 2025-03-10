@@ -12,17 +12,21 @@ interface TestScore {
   answers3: any;
   answers4: any;
   scores: number[];
+  complete: boolean;
+  docId: string;
 }
 
 // Define Zustand store state and actions
 interface AuthState {
   userUid: string | null;
   scores: TestScore[];
+  incompleteScores: TestScore[];
   loading: boolean;
   error: string | null;
   selectedTest: TestScore | null;
   setSelectedTest: (test: TestScore | null) => void;
   fetchScores: () => Promise<void>;
+  fetchIncompleteScores: () => Promise<void>;
   listenForAuthChanges: () => void;
 }
 
@@ -30,6 +34,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set, get) => ({
   userUid: null,
   scores: [],
+  incompleteScores: [],
   loading: false,
   error: null,
   selectedTest: null,
@@ -48,7 +53,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       set({ loading: true });
 
-      const testsQuery = query(collection(db, 'testScores'), where('userId', '==', userUid));
+      const testsQuery = query(collection(db, 'testScores'), where('userId', '==', userUid), where("complete", "==", true));
       const querySnapshot = await getDocs(testsQuery);
 
       let scoresData: TestScore[] = querySnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
@@ -59,6 +64,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         answers3: doc.data().answers3,
         answers4: doc.data().answers4,
         scores: doc.data().scores,
+        complete: doc.data().complete,
+        docId: doc.data().docId
       }));
 
       // Sort scores by date (latest first)
@@ -67,6 +74,49 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ scores: scoresData, loading: false });
     } catch (err) {
       set({ error: 'Error fetching scores: ' + (err instanceof Error ? err.message : 'Unknown error'), loading: false });
+    }
+  },
+
+  fetchIncompleteScores: async () => {
+    const { userUid } = get();
+    if (!userUid) {
+      set({ incompleteScores: [], loading: false });
+      return;
+    }
+
+    try {
+      set({ loading: true });
+
+      const incompleteQuery = query(
+        collection(db, "testScores"),
+        where("userId", "==", userUid),
+        where("complete", "==", false) // Filter by incomplete tests
+      );
+      const querySnapshot = await getDocs(incompleteQuery);
+
+      let incompleteData: TestScore[] = querySnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+        userId: doc.data().userId,
+        date: doc.data().date,
+        answers: doc.data().answers,
+        answers2: doc.data().answers2,
+        answers3: doc.data().answers3,
+        answers4: doc.data().answers4,
+        scores: doc.data().scores,
+        complete: doc.data().complete,
+        docId: doc.data().docId
+      }));
+
+      // Sort incomplete scores by date (latest first)
+      incompleteData = incompleteData.sort(
+        (a, b) => new Date(b.date.seconds * 1000).getTime() - new Date(a.date.seconds * 1000).getTime()
+      );
+
+      set({ incompleteScores: incompleteData, loading: false });
+    } catch (err) {
+      set({
+        error: "Error fetching incomplete scores: " + (err instanceof Error ? err.message : "Unknown error"),
+        loading: false,
+      });
     }
   },
 

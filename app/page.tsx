@@ -22,20 +22,22 @@ export default function Home() {
     <div className="flex flex-col h-screen bg-gray-100 text-gray-900 font-sans">
       {/* Hero Section for Non-Logged-In Users */}
       {!userUid && (
-        <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-center py-20 px-6">
-          <h1 className="text-4xl font-bold mb-6">Welcome to Education One's Diagnostic Tool</h1>
-          <p className="text-xl mb-8">Sign in to take a free test and review your strengths and weaknesses!</p>
-          <div className="flex justify-center gap-4">
-            <Link href="/login">
-              <Button className="bg-white text-blue-600 hover:bg-gray-100 font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300">
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/register">
-              <Button className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300">
-                Register
-              </Button>
-            </Link>
+        <section className="bg-[url('/backgroundlanding.jpg')] bg-cover text-white text-center py-32 px-6 flex">
+          <div className="w-1/2"></div>
+          <div className="w-[650px] bg-blue-700/90 rounded-2xl p-16 w-1/2 ml-20 border-4 border-gray-100">
+            <h1 className="text-4xl font-bold mb-6">
+              Welcome to Education One's Diagnostic Tool 🍎
+            </h1>
+            <p className="text-xl mb-8">
+              Sign in to take a FREE test and review your strengths and weaknesses!
+            </p>
+            <div className="flex justify-center gap-4">
+              <Link href="/login">
+                <Button className="bg-white text-blue-600 hover:bg-gray-100 font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300">
+                  Sign In / Register
+                </Button>
+              </Link>
+            </div>
           </div>
         </section>
       )}
@@ -52,7 +54,7 @@ export default function Home() {
             </div>
             <div className="mt-6">
               <Link href="/test">
-                <Button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300">
+                <Button className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300">
                   Go to Test Page 
                   <FaArrowRight />
                 </Button>
@@ -64,15 +66,15 @@ export default function Home() {
 
       {/* Features Section */}
       {!userUid && (
-      <section className="container mx-auto py-16 px-6">
-        <h2 className="text-3xl font-bold text-center mb-12 text-gray-700">The Number One Place For SAT</h2>
+      <section className="container mx-auto py-8 px-6">
+        <h2 className="text-3xl font-bold text-center mb-12 text-gray-700">The Number One Place For SAT Prep</h2>
         <div className="flex justify-center gap-10">
           
           {/* Card 1: Track Progress */}
           <Card className="bg-white shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 rounded-xl max-w-[400px] cursor-default">
             <CardContent className="p-8 text-center">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4 ">📈 Track Progress</h3>
-              <p className="text-gray-600">Monitor your test scores over time with our intuitive dashboard.</p>
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4 ">📈 Crafted Questions</h3>
+              <p className="text-gray-600">Written by a professional team with years of SAT Experience.</p>
             </CardContent>
           </Card>
 
@@ -94,7 +96,7 @@ export default function Home() {
       <Card className="bg-white hover:shadow-2xl transform hover:scale-105 transition duration-300 cursor-default">
             <CardContent className="p-8 text-center">
               <h3 className="text-2xl font-semibold text-gray-800 mb-4">🚀 Improve Faster</h3>
-              <p className="text-gray-600">Need more help? Email or call our professional SAT team with 2 decades of test taking experience to go through any question and receive recommendations to boost your performance efficiently.</p>
+              <p className="text-gray-600">Need more help? Email or call our professional SAT team with 3 decades of SAT experience to go through any question and receive recommendations to boost your performance efficiently.</p>
             </CardContent>
           </Card>
       </section>

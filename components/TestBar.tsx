@@ -51,7 +51,7 @@ const TestBar: React.FC<TestBarProps> = ({ module }) => {
 
   // Exit confirmation dialog
   const handleExit = () => {
-    const confirmExit = window.confirm("Are you sure you want to exit without saving?");
+    const confirmExit = window.confirm("Are you sure you want to exit?");
     if (confirmExit) {
       window.location.href = "/"; // Redirect to home
     }
@@ -59,7 +59,7 @@ const TestBar: React.FC<TestBarProps> = ({ module }) => {
 
   return (
     <>
-      <div className='flex justify-between items-center px-10 py-2 mb-4 text-white bg-gray-800'>
+      <div className='flex justify-between items-center px-10 py-2 mb-4 text-white bg-gray-900'>
         <div>
           <h1 className='py-2 text-lg font-semibold'>
             Section 1, Module {module + 1}: Reading and Writing
@@ -117,10 +117,10 @@ const TestBar: React.FC<TestBarProps> = ({ module }) => {
         {/* Exit Button with Confirmation */}
         <Button
           onClick={handleExit}
-          className="text-white bg-transparent hover:bg-blue-700 border-2 border-solid"
+          className="text-white bg-transparent hover:bg-red-700 border-2 border-solid"
           aria-label="Exit without saving"
         >
-          Exit without saving
+          Exit to Home
         </Button>
       </div>
     </>
