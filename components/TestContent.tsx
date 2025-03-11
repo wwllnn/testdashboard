@@ -8,6 +8,8 @@ import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth';
 import { collection, addDoc, serverTimestamp, setDoc, doc, updateDoc } from 'firebase/firestore'
 import { useAuthStore } from '@/lib/store';
+import { Fraction } from 'fraction.js';
+
 
 
 import { useRouter } from 'next/navigation'
@@ -30,7 +32,7 @@ import { toast } from "sonner";
 
 const TestContent = () => {
 
-    const { selectedTest } = useAuthStore();
+    const { selectedTest, setSelectedTest } = useAuthStore();
     
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState(Array(27).fill(null));
@@ -54,7 +56,15 @@ const TestContent = () => {
             setAnswers3(selectedTest.answers3 || []);
             setAnswers4(selectedTest.answers4 || []);
             setCurrentDoc(selectedTest.docId)
-        }
+        }     
+        
+        return () => {
+            setAnswers(Array(27).fill(null))
+            setAnswers2(Array(27).fill(null))
+            setAnswers3(Array(22).fill(null))
+            setAnswers4(Array(22).fill(null))
+            setSelectedTest(null);
+        };
     }, [selectedTest]);  // Will run when selectedTest changes
 
     console.log(currentDoc)
@@ -111,23 +121,118 @@ const TestContent = () => {
             }
         })
         answers3.forEach((a, index) => {
-            if(answers3[index] === sampletestdata[2][index].answer){
-                calculatedScore++;
-                mathScore++
-                correctQ.push(index);
-            } else {
+            const correctAnswer = sampletestdata[2][index].answer;
+        
+            // If user's answer or correct answer is null, treat it as incorrect
+            if (a === null || correctAnswer === null) {
                 missedQ.push(index);
+                return;
             }
-        })
+        
+            // If the answer is a letter (A, B, C, etc.), compare directly
+            if (typeof a === 'string' && /^[A-Za-z]+$/.test(a)) {
+                if (a === correctAnswer) {  
+                    calculatedScore++;
+                    mathScore++;
+                    correctQ.push(index);
+                } else {
+                    missedQ.push(index);
+                }
+            } 
+            // Convert both user input and correct answer to numbers for comparison
+            else {
+                try {
+                    let userDecimal: number;
+                    let correctDecimal: number;
+        
+                    // Function to convert a string input (fraction/decimal) to a number
+                    const parseToDecimal = (value: string | number): number => {
+                        if (typeof value === "string") {
+                            return value.includes("/") ? new Fraction(value).valueOf() : parseFloat(value);
+                        }
+                        return value;
+                    };
+        
+                    // Convert user input and correct answer
+                    userDecimal = parseToDecimal(a);
+                    correctDecimal = parseToDecimal(correctAnswer);
+        
+                    // Round both numbers to 3 decimal places
+                    const roundedUserDecimal = Math.round(userDecimal * 1000) / 1000;
+                    const roundedCorrectDecimal = Math.round(correctDecimal * 1000) / 1000;
+        
+                    // Compare the rounded decimals
+                    if (roundedUserDecimal === roundedCorrectDecimal) {  
+                        calculatedScore++;
+                        mathScore++;
+                        correctQ.push(index);
+                    } else {
+                        missedQ.push(index);
+                    }
+                } catch (error) {
+                    console.error(`Invalid input: ${a} or ${correctAnswer}`);
+                    missedQ.push(index); 
+                }
+            }
+        });
         answers4.forEach((a, index) => {
-            if(answers4[index] === sampletestdata[3][index].answer){
-                calculatedScore++;
-                mathScore++;
-                correctQ.push(index);
-            } else {
+            const correctAnswer = sampletestdata[3][index].answer;
+            console.log(correctAnswer)
+            // If user's answer or correct answer is null, treat it as incorrect
+            if (a === null || correctAnswer === null) {
                 missedQ.push(index);
+                return;
             }
-        })
+        
+            // If the answer is a letter (A, B, C, etc.), compare directly
+            if (typeof a === 'string' && /^[A-Za-z]+$/.test(a)) {
+                if (a === correctAnswer) {  
+                    calculatedScore++;
+                    mathScore++;
+                    correctQ.push(index);
+                } else {
+                    missedQ.push(index);
+                }
+            } 
+            // Convert both user input and correct answer to numbers for comparison
+            else {
+                try {
+                    let userDecimal: number;
+                    let correctDecimal: number;
+        
+                    // Function to convert a string input (fraction/decimal) to a number
+                    const parseToDecimal = (value: string | number): number => {
+                        if (typeof value === "string") {
+                            return value.includes("/") ? new Fraction(value).valueOf() : parseFloat(value);
+                        }
+                        return value;
+                    };
+        
+                    // Convert user input and correct answer
+                    userDecimal = parseToDecimal(a);
+                    correctDecimal = parseToDecimal(correctAnswer);
+        
+                    // Round both numbers to 3 decimal places
+                    const roundedUserDecimal = Math.round(userDecimal * 1000) / 1000;
+                    const roundedCorrectDecimal = Math.round(correctDecimal * 1000) / 1000;
+        
+                    // Compare the rounded decimals
+                    console.log(roundedUserDecimal)
+                    console.log(roundedCorrectDecimal)
+                    if (roundedUserDecimal === roundedCorrectDecimal) {  
+                        calculatedScore++;
+                        mathScore++;
+                        correctQ.push(index);
+                        console.log(index);
+                    } else {
+                        missedQ.push(index);
+                    }
+                } catch (error) {
+                    console.error(`Invalid input: ${a} or ${correctAnswer}`);
+                    missedQ.push(index); 
+                }
+            }
+        });
         
         return [calculatedScore, readingScore, mathScore];
     }
@@ -135,11 +240,12 @@ const TestContent = () => {
 
     const handleSubmit = async () => {
         const scores = calculateScore()
-        console.log(currentDoc)
+        console.log("Current Doc ID:", currentDoc);
+    
         try {
-            if (!selectedTest?.docId){
-                const docRef = doc(collection(db, "testScores")); // Reference with custom ID
-                await setDoc(docRef, {
+            if (!selectedTest?.docId) {
+                // Create a new document
+                const docRef = await addDoc(collection(db, "testScores"), { // Use addDoc instead of doc + setDoc
                     userId: user.uid,
                     date: serverTimestamp(),
                     answers,
@@ -149,11 +255,13 @@ const TestContent = () => {
                     scores,
                     test: 'SAT 1',
                     complete: true,
-                }); // Add or overwrite document
-                await updateDoc(docRef, { docId: docRef.id }); // Now docID exists
-                setCurrentDoc(docRef.id);
-                console.log("Document added with ID:", currentDoc);
+                });
+    
+                await updateDoc(docRef, { docId: docRef.id }); // Store doc ID inside the document
+                setCurrentDoc(docRef.id); // Update state
+                console.log("Document added with ID:", docRef.id);
             } else {
+                // Update existing document
                 const docRef = doc(db, "testScores", selectedTest.docId);
                 await updateDoc(docRef, {
                     userId: user.uid,
@@ -165,17 +273,21 @@ const TestContent = () => {
                     scores,
                     test: 'SAT 1',
                     complete: true,
-                    docId: docRef.id
-                })
-
-                console.log("Document updated successfully:", currentDoc);
+                });
+                console.log("Document updated successfully:", selectedTest.docId);
             }
+            setAnswers(Array(27).fill(null))
+            setAnswers2(Array(27).fill(null))
+            setAnswers3(Array(27).fill(null))
+            setAnswers4(Array(27).fill(null))
 
-            router.push('/');
-            
-          } catch (error) {
-            console.error("Error adding document:", error);
-          }
+            setSelectedTest(null);
+            toast.success("Test Saved");
+            router.push("/");
+
+        } catch (error) {
+            console.error("Error saving document:", error);
+        }
     }
 
     const handleSave = async () => {

@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
+import { Fraction } from 'fraction.js';
 
 
 import { sampletestdata }  from '../lib/data.js'
@@ -9,25 +10,35 @@ type testQuestiondProps = {
     module: number,
     number: number;
     answers: any[],
-    handleA: (option: string) => void;
+    handleA: (option: any) => void;
 };
 
 
 
 const TestQuestion: React.FC<testQuestiondProps> = ({module, number, answers, handleA}) => {
     const [text, setText] = useState("");
-
+    const [fractionValue, setFractionValue] = useState<Fraction | null>(null);
+    
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-
         const value = e.target.value;
         if (/^[-0-9./]*$/.test(value)) {
             setText(value);
-            handleA(value);
+            try {
+                const fraction = new Fraction(value); // Convert input to a fraction
+                setFractionValue(fraction);
+                handleA(fraction.toFraction()); // Pass the fraction as a string like "1/2"
+            } catch (err) {
+                setFractionValue(null); // Handle invalid input
+            }
         }
+    };
+    
+    useEffect(() => {
+        setText("");
+        setFractionValue(null);
+    }, [module, number]);
 
-    }
-
-    console.log(module, number)
+    console.log(answers)
     return (
     <div className='text-gray-100 flex p-6 my-5 mx-48 bg-gray-800 rounded-lg h-[65vh] shadow-lg text-lg'>
         <div className='py-5 px-5 flex-1'>

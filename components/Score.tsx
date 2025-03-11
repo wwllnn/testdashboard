@@ -9,6 +9,7 @@ import { sampletestdata, sampletopics, diff } from '@/lib/data';
 import { difference } from 'next/dist/build/utils';
 import { Bree_Serif } from 'next/font/google';
 import { CiSaveDown2 } from "react-icons/ci";
+import { useState } from 'react';
 
 
 const breeSerif = Bree_Serif({
@@ -19,6 +20,10 @@ const breeSerif = Bree_Serif({
 const Score = () => {
   const { selectedTest } = useAuthStore();
   const router = useRouter();
+  const [isScrollable, setIsScrollable] = useState(true);
+  const [showPercentages, setShowPercentages] = useState(false);
+
+
 
   useEffect(() => {
     if (!selectedTest) {
@@ -61,7 +66,6 @@ const Score = () => {
     mathTopicsMap.set(q.topic, (mathTopicsMap.get(q.topic) || 0) + 1);
     mathDiffMap.set(q.difficulty, (mathDiffMap.get(q.difficulty) || 0) + 1)
   });
-  console.log(mathDiffMap)
 
   //array of topics of missed questions
   selectedTest.answers.forEach((item: string, index: number) => {
@@ -75,7 +79,6 @@ const Score = () => {
     if (sampletestdata[1][index].answer != selectedTest.answers2[index]) {
       readingTopics.push(sampletestdata[1][index].topic);
       readingDiff.push(sampletestdata[1][index].difficulty);
-      console.log('1' + index)
     }
   });
 
@@ -83,13 +86,8 @@ const Score = () => {
     if (sampletestdata[2][index].answer != selectedTest.answers3[index]) {
       mathTopics.push(sampletestdata[2][index].topic);
       mathDiff.push(sampletestdata[2][index].difficulty);
-      console.log('2' + index)
-
     }
   });
-
-  console.log(mathDiff)
-
 
   selectedTest.answers4.forEach((item: string, index: number) => {
     if (sampletestdata[3][index].answer != selectedTest.answers4[index]) {
@@ -143,6 +141,83 @@ const Score = () => {
       .filter(key => wrongMathTopicsMap.has(key))
       .map(key => [key, [mathTopicsMap.get(key)!, wrongMathTopicsMap.get(key)!]])
   );
+
+  const totalScore = (scores: number[]) => {
+    let totalScore = 0;
+
+    let reading = Math.round((scores[1] * 11.11 + 200) / 10) * 10;
+    if (reading > 800) reading = 800;
+    let math = Math.round((scores[2] * 13.64 + 200) / 10) * 10;
+    if (math > 800) math = 800;
+
+    totalScore = math + reading;
+
+    return totalScore;
+  }
+
+  const readingScore = (score: number) => {
+  
+    let reading = Math.round((score * 11.11) / 10) * 10  + 200;
+    if (reading > 800) reading = 800;
+
+    return reading;
+  }
+
+  const mathScore = (score: number) => {
+    let math = Math.floor((score * 13.64) / 10) * 10 + 200;
+    if (math > 800) math = 800;
+    return math;
+  };
+
+  function getSatPercentile(score: number) {
+    // Adjusted SAT distribution stats
+    const mean = 1060;  // Slightly raised mean to lower percentiles overall
+    const stdDev = 240; // Increased standard deviation to spread scores out
+  
+    // Calculate z-score
+    const z = (score - mean) / stdDev;
+  
+    // Convert z-score to percentile
+    let percentile = normalCDF(z) * 100;
+  
+    // Lower percentiles further and ensure 1600 stays at 99%
+    if (score >= 1600) return 99;
+    if (score >= 1550) return Math.max(percentile - 5, 96);
+    if (score >= 1500) return Math.max(percentile - 7, 92);
+    if (score >= 1400) return Math.max(percentile - 10, 85);
+    if (score >= 1300) return Math.max(percentile - 12, 78);
+    if (score >= 1200) return Math.max(percentile - 14, 68);
+    if (score >= 1100) return Math.max(percentile - 16, 52);
+    if (score >= 1000) return Math.max(percentile - 18, 32);
+    if (score >= 900) return Math.max(percentile - 20, 18);
+    if (score >= 800) return Math.max(percentile - 22, 7);
+    return Math.max(percentile - 23, 1); // Floor it at 1%
+  }
+  
+  // Normal CDF approximation
+  function normalCDF(z: number) {
+    return (1 + erf(z / Math.SQRT2)) / 2;
+  }
+  
+  // Error function approximation
+  function erf(x: number) {
+    const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741;
+    const a4 = -1.453152027, a5 = 1.061405429;
+    const p = 0.3275911;
+  
+    const sign = x < 0 ? -1 : 1;
+    x = Math.abs(x);
+  
+    const t = 1 / (1 + p * x);
+    const y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+  
+    return sign * y;
+  }
+
+  const calculatePercentage = (correct: number, total: number) => {
+    return total === 0 ? 0 : Math.round((correct / total) * 100);
+  };
+  
   
 
   return (
@@ -170,16 +245,16 @@ const Score = () => {
           <div>
             <p className={`text-sky-500 text-2xl ${breeSerif.className}`}><strong>Your Total Score:</strong></p> 
             <div className='flex'>
-              <p className={`text-9xl ${breeSerif.className}`}>{selectedTest.scores[0] * 10 + 400}</p>              
+              <p className={`text-9xl ${breeSerif.className}`}>{totalScore(selectedTest.scores)}</p>              
               <p className='ml-1 text-gray-400 self-end'>out of 1600 scale</p>
             </div>
             <div className='flex'>
-              <p className="text-gray-600 text-2xl">Reading and Writing: {selectedTest.scores[1] * 10 + 200}</p><p className='flex text-gray-500 self-end'>/800</p>
+              <p className="text-gray-600 text-2xl">Reading and Writing: {readingScore(selectedTest.scores[1])}</p><p className='flex text-gray-500 self-end'>/800</p>
             </div>
             <div className='flex'>
-            <p className="text-gray-600 text-2xl">Math: {selectedTest.scores[2] * 10 + 200}</p><p className='flex text-gray-500 self-end'>/800</p>
+            <p className="text-gray-600 text-2xl">Math: {mathScore(selectedTest.scores[2])}</p><p className='flex text-gray-500 self-end'>/800</p>
             </div>
-            <p className='text-gray-600 mt-2'>90th Percentile of National Test Scores</p>
+            <p className='text-gray-600 mt-2'>Estimated {getSatPercentile(totalScore(selectedTest.scores))}th Percentile of National Test Scores</p>
           </div>
         </div>
       </CardContent>
@@ -241,42 +316,60 @@ const Score = () => {
 
 
       {/* Topics Overview */}
-      <section className='grid grid-cols-2 gap-4'>
-      <Card className="shadow-lg rounded-lg">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Reading Topics Breakdown</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-        {Array.from(zippedReadingTopicsMap.entries()).map(([topic, [wrong, correct]]) => (
-          <div key={topic} className="flex justify-between">
-            <span className="font-medium">{topic}</span>
-            <span>
-              <span className="">{correct}</span>
-              <span> / </span>
-              <span className="">{wrong}</span>
-            </span>
-          </div>
-        ))}
-        </CardContent>
-      </Card>
-      <Card className="shadow-lg rounded-lg">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Math Topics Breakdown</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4 max-h-[500px] overflow-y-auto">
-        {Array.from(zippedMathTopicsMap.entries()).map(([topic, [wrong, correct]]) => (
-          <div key={topic} className="flex justify-between">
-            <span className="font-medium">{topic}</span>
-            <span className='whitespace-nowrap'>
-              <span className="">{correct}</span>
-              <span> / </span>
-              <span className="">{wrong}</span>
-            </span>
-          </div>
-        ))}
-        </CardContent>
-      </Card>
+      <section className="grid grid-cols-2 gap-4">
+        {/* Reading Topics Breakdown */}
+        <Card className="shadow-lg rounded-lg">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold">Reading Topics Breakdown</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {Array.from(zippedReadingTopicsMap.entries()).map(([topic, [wrong, correct]]) => {
+              const total = correct + wrong;
+              return (
+                <div key={topic} className="flex justify-between">
+                  <span className="font-medium">{topic}</span>
+                  <span>
+                    {showPercentages
+                      ? `${calculatePercentage(correct, total)}%`
+                      : `${correct} / ${wrong}`}
+                  </span>
+                </div>
+              );
+            })}
+          </CardContent>
+        </Card>
+
+        {/* Math Topics Breakdown */}
+        <Card className="shadow-lg rounded-lg">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold">Math Topics Breakdown</CardTitle>
+          </CardHeader>
+          <CardContent className={`space-y-4 ${isScrollable ? "max-h-[500px] overflow-y-auto" : ""}`}>
+            {Array.from(zippedMathTopicsMap.entries()).map(([topic, [wrong, correct]]) => {
+              const total = correct + wrong;
+              return (
+                <div key={topic} className="flex justify-between">
+                  <span className="font-medium">{topic}</span>
+                  <span className="whitespace-nowrap">
+                    {showPercentages
+                      ? `${calculatePercentage(correct, total)}%`
+                      : `${correct} / ${wrong}`}
+                  </span>
+                </div>
+              );
+            })}
+          </CardContent>
+        </Card>
       </section>
+
+            <div className='flex'>
+            <Button onClick={() => setIsScrollable(!isScrollable)} className="mb-4 mr-4 bg-sky-500">
+              {isScrollable ? "Show All on One Page" : "Enable Scrolling"}
+            </Button>
+            <Button onClick={() => setShowPercentages(!showPercentages)} className='bg-sky-500'>
+                {showPercentages ? "Show as Fractions" : "Show as Percentages"}
+              </Button>
+        </div>
     </div>
   );
 };

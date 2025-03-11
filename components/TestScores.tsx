@@ -19,6 +19,19 @@ const ScoresPage = () => {
   if (error) return <p className="text-red-500 text-center">{error}</p>;
   if (scores.length === 0) return <p className="text-center text-gray-500 mt-5">No test scores available.</p>;
 
+  const totalScore = (scores: number[]) => {
+    let totalScore = 0;
+
+    let reading = Math.round((scores[1] * 11.11 + 200) / 10) * 10;
+    if (reading > 800) reading = 800;
+    let math = Math.round((scores[2] * 13.64 + 200) / 10) * 10;
+    if (math > 800) math = 800;
+
+    totalScore = math + reading;
+
+    return totalScore;
+  }
+
 
 
   return (
@@ -32,7 +45,7 @@ const ScoresPage = () => {
               router.push(`/breakdown/${index}`);
             }}>
               <CardHeader className='pb-4'>
-                <CardTitle className='text-4xl font-bold'>{score.scores[0] * 10 + 400}</CardTitle>
+                <CardTitle className='text-4xl font-bold'>{totalScore(score.scores)}</CardTitle>
               </CardHeader>
               <CardContent>
               <p>
