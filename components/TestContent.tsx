@@ -41,6 +41,9 @@ const TestContent = () => {
     const [answers4, setAnswers4] = useState(Array(sampletestdata[3].length).fill(null));
     const [currentDoc, setCurrentDoc] = useState('');
 
+    const [missedQuestions, setMissedQuestions] = useState<number[]>([])
+    
+
     const [module, setModule] = useState(0);
     const [score, setScore] = useState(0);
     const { user } = useAuth();
@@ -93,13 +96,48 @@ const TestContent = () => {
         newAnswers[currentQuestion] = option;
         setAnswers4(newAnswers);
     }  
+
+    const totalScore = (scores: number[]) => {
+        let totalScore = 0;
+    
+        let reading = Math.round((scores[1] * 11.11 + 200) / 10) * 10;
+        if (reading > 800) reading = 800;
+        let math = Math.round((scores[2] * 13.64 + 200) / 10) * 10;
+        if (math > 800) math = 800;
+    
+        totalScore = math + reading;
+    
+        return totalScore;
+      }
+    
+      const getReadingScore = (score: number) => {
+      
+        let reading = Math.round((score * 11.11) / 10) * 10  + 200;
+        if (reading > 800) reading = 800;
+    
+        return reading;
+      }
+    
+      const getMathScore = (score: number) => {
+        let math = Math.floor((score * 13.64) / 10) * 10 + 200;
+        if (math > 800) math = 800;
+        return math;
+      };
     
     const calculateScore = () => {
+        const readingTopics: string[] = [];
+        const mathTopics: string[] = [];
+      
+        const readingDiff: string[] = [];
+        const mathDiff: string[] = [];
+
         let calculatedScore = 0;
         let mathScore = 0;
         let readingScore = 0;
         let correctQ = [];
-        let missedQ = [];
+        let missedQ: number[] = [];
+
+        
 
 
         answers.forEach((a, index) => {
@@ -109,6 +147,8 @@ const TestContent = () => {
                 correctQ.push(index);
             } else {
                 missedQ.push(index);
+                readingTopics.push(sampletestdata[0][index].topic);
+                readingDiff.push(sampletestdata[0][index].difficulty);
             }
         })
         answers2.forEach((a, index) => {
@@ -118,6 +158,8 @@ const TestContent = () => {
                 correctQ.push(index);
             } else {
                 missedQ.push(index);
+                readingTopics.push(sampletestdata[1][index].topic);
+                readingDiff.push(sampletestdata[1][index].difficulty);
             }
         })
         answers3.forEach((a, index) => {
@@ -126,6 +168,8 @@ const TestContent = () => {
             // If user's answer or correct answer is null, treat it as incorrect
             if (a === null || correctAnswer === null) {
                 missedQ.push(index);
+                mathTopics.push(sampletestdata[2][index].topic);
+                mathDiff.push(sampletestdata[2][index].difficulty);
                 return;
             }
         
@@ -137,6 +181,8 @@ const TestContent = () => {
                     correctQ.push(index);
                 } else {
                     missedQ.push(index);
+                    mathTopics.push(sampletestdata[2][index].topic);
+                    mathDiff.push(sampletestdata[2][index].difficulty);
                 }
             } 
             // Convert both user input and correct answer to numbers for comparison
@@ -168,19 +214,24 @@ const TestContent = () => {
                         correctQ.push(index);
                     } else {
                         missedQ.push(index);
+                        mathTopics.push(sampletestdata[2][index].topic);
+                        mathDiff.push(sampletestdata[2][index].difficulty);
                     }
                 } catch (error) {
                     console.error(`Invalid input: ${a} or ${correctAnswer}`);
                     missedQ.push(index); 
+                    mathTopics.push(sampletestdata[2][index].topic);
+                    mathDiff.push(sampletestdata[2][index].difficulty);
                 }
             }
         });
         answers4.forEach((a, index) => {
             const correctAnswer = sampletestdata[3][index].answer;
-            console.log(correctAnswer)
             // If user's answer or correct answer is null, treat it as incorrect
             if (a === null || correctAnswer === null) {
                 missedQ.push(index);
+                mathTopics.push(sampletestdata[3][index].topic);
+                mathDiff.push(sampletestdata[3][index].difficulty);
                 return;
             }
         
@@ -192,6 +243,8 @@ const TestContent = () => {
                     correctQ.push(index);
                 } else {
                     missedQ.push(index);
+                    mathTopics.push(sampletestdata[3][index].topic);
+                    mathDiff.push(sampletestdata[3][index].difficulty);
                 }
             } 
             // Convert both user input and correct answer to numbers for comparison
@@ -217,24 +270,32 @@ const TestContent = () => {
                     const roundedCorrectDecimal = Math.round(correctDecimal * 1000) / 1000;
         
                     // Compare the rounded decimals
-                    console.log(roundedUserDecimal)
-                    console.log(roundedCorrectDecimal)
                     if (roundedUserDecimal === roundedCorrectDecimal) {  
                         calculatedScore++;
                         mathScore++;
                         correctQ.push(index);
-                        console.log(index);
                     } else {
                         missedQ.push(index);
+                        mathTopics.push(sampletestdata[3][index].topic);
+                        mathDiff.push(sampletestdata[3][index].difficulty);
                     }
                 } catch (error) {
                     console.error(`Invalid input: ${a} or ${correctAnswer}`);
                     missedQ.push(index); 
+                    mathTopics.push(sampletestdata[3][index].topic);
+                    mathDiff.push(sampletestdata[3][index].difficulty);
                 }
             }
         });
+
+        const reading = getReadingScore(readingScore);
+        const math = getMathScore(mathScore);
+        const total = reading + math;
+        setMissedQuestions(missedQ);
+
+
         
-        return [calculatedScore, readingScore, mathScore];
+        return [calculatedScore, readingScore, mathScore, reading, math, total];
     }
     
 
@@ -255,11 +316,10 @@ const TestContent = () => {
                     scores,
                     test: 'SAT 1',
                     complete: true,
+                    missedQ: missedQuestions
                 });
-    
                 await updateDoc(docRef, { docId: docRef.id }); // Store doc ID inside the document
                 setCurrentDoc(docRef.id); // Update state
-                console.log("Document added with ID:", docRef.id);
             } else {
                 // Update existing document
                 const docRef = doc(db, "testScores", selectedTest.docId);
@@ -273,6 +333,7 @@ const TestContent = () => {
                     scores,
                     test: 'SAT 1',
                     complete: true,
+                    missedQ: missedQuestions
                 });
                 console.log("Document updated successfully:", selectedTest.docId);
             }
@@ -307,11 +368,11 @@ const TestContent = () => {
                     scores,
                     test: 'SAT 1',
                     complete: false,
+                    missedQ: missedQuestions
                 });
     
                 await updateDoc(docRef, { docId: docRef.id }); // Store doc ID inside the document
                 setCurrentDoc(docRef.id); // Update state
-                console.log("Document added with ID:", docRef.id);
             } else {
                 // Update existing document
                 const docRef = doc(db, "testScores", selectedTest.docId);
@@ -325,6 +386,7 @@ const TestContent = () => {
                     scores,
                     test: 'SAT 1',
                     complete: false,
+                    missedQ: missedQuestions
                 });
                 console.log("Document updated successfully:", selectedTest.docId);
             }
@@ -389,7 +451,7 @@ const TestContent = () => {
                 {(module == 0 && currentQuestion == sampletestdata[module].length - 1) &&
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button className='w-40 py-6 text-xl ml-1'>Next Module<FaLongArrowAltRight />
+                            <Button className='w-40 py-6 text-xl ml-1 bg-gray-800 hover:bg-gray-700'>Next Module<FaLongArrowAltRight />
                         </Button>
                         </DialogTrigger>
                         <DialogContent>
@@ -409,7 +471,7 @@ const TestContent = () => {
                 {(module == 1 && currentQuestion == sampletestdata[module].length - 1) &&
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button className='w-40 py-6 text-xl ml-1'>Next Module<FaLongArrowAltRight />
+                            <Button className='w-40 py-6 text-xl ml-1 bg-gray-800 hover:bg-gray-700'>Next Module<FaLongArrowAltRight />
                         </Button>
                         </DialogTrigger>
                         <DialogContent>
@@ -429,7 +491,7 @@ const TestContent = () => {
                 {(module == 2 && currentQuestion == sampletestdata[module].length - 1) &&
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button className='w-40 py-6 text-xl ml-1'>Next Module<FaLongArrowAltRight />
+                            <Button className='w-40 py-6 text-xl ml-1 bg-gray-800 hover:bg-gray-700'>Next Module<FaLongArrowAltRight />
                         </Button>
                         </DialogTrigger>
                         <DialogContent>

@@ -14,6 +14,7 @@ interface TestScore {
   scores: number[];
   complete: boolean;
   docId: string;
+  missedQ: number[];
 }
 
 // Define Zustand store state and actions
@@ -65,7 +66,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         answers4: doc.data().answers4,
         scores: doc.data().scores,
         complete: doc.data().complete,
-        docId: doc.data().docId
+        docId: doc.data().docId,
+        missedQ: doc.data().missedQ
       }));
 
       // Sort scores by date (latest first)
@@ -103,7 +105,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         answers4: doc.data().answers4,
         scores: doc.data().scores,
         complete: doc.data().complete,
-        docId: doc.data().docId
+        docId: doc.data().docId,
+        missedQ: doc.data().missedQ
       }));
 
       // Sort incomplete scores by date (latest first)

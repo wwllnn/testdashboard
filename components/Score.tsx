@@ -10,6 +10,7 @@ import { difference } from 'next/dist/build/utils';
 import { Bree_Serif } from 'next/font/google';
 import { CiSaveDown2 } from "react-icons/ci";
 import { useState } from 'react';
+import Fraction from 'fraction.js';
 
 
 const breeSerif = Bree_Serif({
@@ -82,19 +83,108 @@ const Score = () => {
     }
   });
 
-  selectedTest.answers3.forEach((item: string, index: number) => {
-    if (sampletestdata[2][index].answer != selectedTest.answers3[index]) {
-      mathTopics.push(sampletestdata[2][index].topic);
-      mathDiff.push(sampletestdata[2][index].difficulty);
-    }
-  });
 
-  selectedTest.answers4.forEach((item: string, index: number) => {
-    if (sampletestdata[3][index].answer != selectedTest.answers4[index]) {
-      mathTopics.push(sampletestdata[3][index].topic);
-      mathDiff.push(sampletestdata[3][index].difficulty);
-    }
-  });
+            selectedTest.answers3.forEach((a:any, index: number) => {
+              const correctAnswer = sampletestdata[2][index].answer;
+          
+              // If user's answer or correct answer is null, treat it as incorrect
+              if (a === null || correctAnswer === null) {
+                  mathTopics.push(sampletestdata[2][index].topic);
+                  mathDiff.push(sampletestdata[2][index].difficulty);
+                  return;
+              }
+          
+              // If the answer is a letter (A, B, C, etc.), compare directly
+              if (typeof a === 'string' && /^[A-Za-z]+$/.test(a)) {
+                  if (a != correctAnswer) {  
+                    mathTopics.push(sampletestdata[2][index].topic);
+                    mathDiff.push(sampletestdata[2][index].difficulty);
+                  }
+              } 
+              // Convert both user input and correct answer to numbers for comparison
+              else {
+                  try {
+                      let userDecimal: number;
+                      let correctDecimal: number;
+          
+                      // Function to convert a string input (fraction/decimal) to a number
+                      const parseToDecimal = (value: string | number): number => {
+                          if (typeof value === "string") {
+                              return value.includes("/") ? new Fraction(value).valueOf() : parseFloat(value);
+                          }
+                          return value;
+                      };
+          
+                      // Convert user input and correct answer
+                      userDecimal = parseToDecimal(a);
+                      correctDecimal = parseToDecimal(correctAnswer);
+          
+                      // Round both numbers to 3 decimal places
+                      const roundedUserDecimal = Math.round(userDecimal * 1000) / 1000;
+                      const roundedCorrectDecimal = Math.round(correctDecimal * 1000) / 1000;
+          
+                      // Compare the rounded decimals
+                      if (roundedUserDecimal != roundedCorrectDecimal) {  
+                        mathTopics.push(sampletestdata[2][index].topic);
+                        mathDiff.push(sampletestdata[2][index].difficulty);
+                      } 
+                  } catch (error) {
+                      console.error(`Invalid input: ${a} or ${correctAnswer}`);
+                      mathTopics.push(sampletestdata[2][index].topic);
+                      mathDiff.push(sampletestdata[2][index].difficulty);
+                  }
+              }
+          })
+          selectedTest.answers4.forEach((a:any, index:number) => {
+              const correctAnswer = sampletestdata[3][index].answer;
+              // If user's answer or correct answer is null, treat it as incorrect
+              if (a === null || correctAnswer === null) {
+                  mathTopics.push(sampletestdata[3][index].topic);
+                  mathDiff.push(sampletestdata[3][index].difficulty);
+                  return;
+              }
+          
+              // If the answer is a letter (A, B, C, etc.), compare directly
+              if (typeof a === 'string' && /^[A-Za-z]+$/.test(a)) {
+                  if (a != correctAnswer) {  
+                      mathTopics.push(sampletestdata[3][index].topic);
+                      mathDiff.push(sampletestdata[3][index].difficulty);
+                  } 
+              } 
+              // Convert both user input and correct answer to numbers for comparison
+              else {
+                  try {
+                      let userDecimal: number;
+                      let correctDecimal: number;
+          
+                      // Function to convert a string input (fraction/decimal) to a number
+                      const parseToDecimal = (value: string | number): number => {
+                          if (typeof value === "string") {
+                              return value.includes("/") ? new Fraction(value).valueOf() : parseFloat(value);
+                          }
+                          return value;
+                      };
+          
+                      // Convert user input and correct answer
+                      userDecimal = parseToDecimal(a);
+                      correctDecimal = parseToDecimal(correctAnswer);
+          
+                      // Round both numbers to 3 decimal places
+                      const roundedUserDecimal = Math.round(userDecimal * 1000) / 1000;
+                      const roundedCorrectDecimal = Math.round(correctDecimal * 1000) / 1000;
+          
+                      // Compare the rounded decimals
+                      if (roundedUserDecimal != roundedCorrectDecimal) {  
+                        mathTopics.push(sampletestdata[3][index].topic);
+                        mathDiff.push(sampletestdata[3][index].difficulty);
+                      } 
+                  } catch (error) {
+                      console.error(`Invalid input: ${a} or ${correctAnswer}`);
+                      mathTopics.push(sampletestdata[3][index].topic);
+                      mathDiff.push(sampletestdata[3][index].difficulty);
+                  }
+              }
+          });
 
 
   //get topic and difficulty totals, reading and math
@@ -142,32 +232,7 @@ const Score = () => {
       .map(key => [key, [mathTopicsMap.get(key)!, wrongMathTopicsMap.get(key)!]])
   );
 
-  const totalScore = (scores: number[]) => {
-    let totalScore = 0;
 
-    let reading = Math.round((scores[1] * 11.11 + 200) / 10) * 10;
-    if (reading > 800) reading = 800;
-    let math = Math.round((scores[2] * 13.64 + 200) / 10) * 10;
-    if (math > 800) math = 800;
-
-    totalScore = math + reading;
-
-    return totalScore;
-  }
-
-  const readingScore = (score: number) => {
-  
-    let reading = Math.round((score * 11.11) / 10) * 10  + 200;
-    if (reading > 800) reading = 800;
-
-    return reading;
-  }
-
-  const mathScore = (score: number) => {
-    let math = Math.floor((score * 13.64) / 10) * 10 + 200;
-    if (math > 800) math = 800;
-    return math;
-  };
 
   function getSatPercentile(score: number) {
     // Adjusted SAT distribution stats
@@ -245,16 +310,16 @@ const Score = () => {
           <div>
             <p className={`text-sky-500 text-2xl ${breeSerif.className}`}><strong>Your Total Score:</strong></p> 
             <div className='flex'>
-              <p className={`text-9xl ${breeSerif.className}`}>{totalScore(selectedTest.scores)}</p>              
+              <p className={`text-9xl ${breeSerif.className}`}>{selectedTest.scores[5]}</p>              
               <p className='ml-1 text-gray-400 self-end'>out of 1600 scale</p>
             </div>
             <div className='flex'>
-              <p className="text-gray-600 text-2xl">Reading and Writing: {readingScore(selectedTest.scores[1])}</p><p className='flex text-gray-500 self-end'>/800</p>
+              <p className="text-gray-600 text-2xl">Reading and Writing: {selectedTest.scores[3]}</p><p className='flex text-gray-500 self-end'>/800</p>
             </div>
             <div className='flex'>
-            <p className="text-gray-600 text-2xl">Math: {mathScore(selectedTest.scores[2])}</p><p className='flex text-gray-500 self-end'>/800</p>
+            <p className="text-gray-600 text-2xl">Math: {selectedTest.scores[4]}</p><p className='flex text-gray-500 self-end'>/800</p>
             </div>
-            <p className='text-gray-600 mt-2'>Estimated {getSatPercentile(totalScore(selectedTest.scores))}th Percentile of National Test Scores</p>
+            <p className='text-gray-600 mt-2'>Estimated {getSatPercentile(selectedTest.scores[5])}th Percentile of National Test Scores</p>
           </div>
         </div>
       </CardContent>
