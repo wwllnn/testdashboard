@@ -61,9 +61,19 @@ const TestBar: React.FC<TestBarProps> = ({ module }) => {
     <>
       <div className='flex justify-between items-center px-10 py-2 mb-4 text-white bg-gray-900'>
         <div>
-          <h1 className='py-2 text-lg font-semibold'>
-            Section 1, Module {module + 1}: Reading and Writing
-          </h1>
+          {module == 1 && ( <h1 className='py-2 text-lg font-semibold'>
+            Section 1, Module 1: Reading and Writing
+          </h1>)}
+          {module == 2 && ( <h1 className='py-2 text-lg font-semibold'>
+            Section 1, Module 2: Reading and Writing
+          </h1>)}
+          {module == 3 && ( <h1 className='py-2 text-lg font-semibold'>
+            Section 2, Module 1: Math
+          </h1>)}
+          {module == 4 && ( <h1 className='py-2 text-lg font-semibold'>
+            Section 2, Module 2: Math
+          </h1>)}
+
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="outline" className="text-blue-600 bg-white hover:bg-gray-100">

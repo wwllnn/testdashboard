@@ -2,7 +2,10 @@
   "name": "dashboard",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://vvllxn.github.io/testdashboard",
   "scripts": {
+    "predeploy": "next build && next export",
+    "deploy": "gh-pages -d out",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

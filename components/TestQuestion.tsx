@@ -40,7 +40,7 @@ const TestQuestion: React.FC<testQuestiondProps> = ({module, number, answers, ha
 
     console.log(answers)
     return (
-    <div className='text-gray-100 flex p-6 my-5 mx-48 bg-gray-800 rounded-lg h-[65vh] shadow-lg text-lg'>
+    <div className='text-gray-100 flex p-6 my-5 mx-48 bg-gray-800 rounded-lg h-[65vh] shadow-lg'>
         <div className='py-5 px-5 flex-1'>
             <div className='whitespace-pre-wrap'>{number + 1}. {sampletestdata[module][number].passage}</div>
             <div className='max-w-[650px] max-auto relative m-4 mx-auto'>
