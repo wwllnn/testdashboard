@@ -34,7 +34,11 @@ const TestQuestion: React.FC<testQuestiondProps> = ({module, number, answers, ha
     };
     
     useEffect(() => {
-        setText("");
+        if (answers[number]){
+            setText(answers[number]);
+        } else {
+            setText("")
+        }
         setFractionValue(null);
     }, [module, number]);
 

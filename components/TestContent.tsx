@@ -39,7 +39,6 @@ const TestContent = () => {
     const [answers2, setAnswers2] = useState(Array(sampletestdata[1].length).fill(null));
     const [answers3, setAnswers3] = useState(Array(sampletestdata[2].length).fill(null));
     const [answers4, setAnswers4] = useState(Array(sampletestdata[3].length).fill(null));
-    const [currentDoc, setCurrentDoc] = useState('');
 
     const [missedQuestions, setMissedQuestions] = useState<number[]>([])
     
@@ -58,7 +57,6 @@ const TestContent = () => {
             setAnswers2(selectedTest.answers2 || []);
             setAnswers3(selectedTest.answers3 || []);
             setAnswers4(selectedTest.answers4 || []);
-            setCurrentDoc(selectedTest.docId)
         }     
         
         return () => {
@@ -68,9 +66,7 @@ const TestContent = () => {
             setAnswers4(Array(22).fill(null))
             setSelectedTest(null);
         };
-    }, [selectedTest]);  // Will run when selectedTest changes
-
-    console.log(currentDoc)
+    }, []);  // Will run when selectedTest changes
 
 
     const handleAnswer = (option: String) => {
@@ -301,10 +297,9 @@ const TestContent = () => {
 
     const handleSubmit = async () => {
         const scores = calculateScore()
-        console.log("Current Doc ID:", currentDoc);
     
         try {
-            if (!selectedTest?.docId) {
+            if (!selectedTest) {
                 // Create a new document
                 const docRef = await addDoc(collection(db, "testScores"), { // Use addDoc instead of doc + setDoc
                     userId: user.uid,
@@ -319,7 +314,6 @@ const TestContent = () => {
                     missedQ: missedQuestions
                 });
                 await updateDoc(docRef, { docId: docRef.id }); // Store doc ID inside the document
-                setCurrentDoc(docRef.id); // Update state
             } else {
                 // Update existing document
                 const docRef = doc(db, "testScores", selectedTest.docId);
@@ -353,10 +347,9 @@ const TestContent = () => {
 
     const handleSave = async () => {
         let scores = [0, 0, 0]; 
-        console.log("Current Doc ID:", currentDoc);
     
         try {
-            if (!selectedTest?.docId) {
+            if (!selectedTest) {
                 // Create a new document
                 const docRef = await addDoc(collection(db, "testScores"), { // Use addDoc instead of doc + setDoc
                     userId: user.uid,
@@ -372,7 +365,6 @@ const TestContent = () => {
                 });
     
                 await updateDoc(docRef, { docId: docRef.id }); // Store doc ID inside the document
-                setCurrentDoc(docRef.id); // Update state
             } else {
                 // Update existing document
                 const docRef = doc(db, "testScores", selectedTest.docId);
