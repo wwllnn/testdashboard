@@ -26,6 +26,7 @@ const Score = () => {
 
 
 
+
   useEffect(() => {
     if (!selectedTest) {
       router.push('/'); // Redirect if no test is selected
@@ -45,6 +46,12 @@ const Score = () => {
 
   const readingDiffMap = new Map();
   const mathDiffMap = new Map();
+
+  const wrongAnswers: any[] = [];
+  const wrongAnswers2: any[] = [];
+  const wrongAnswers3: any[] = [];
+  const wrongAnswers4: any[] = [];
+
 
   sampletestdata[0].forEach((q) => {
     readingTopicsMap.set(q.topic, (readingTopicsMap.get(q.topic) || 0) + 1);
@@ -73,13 +80,19 @@ const Score = () => {
     if (sampletestdata[0][index].answer != selectedTest.answers[index]) {
       readingTopics.push(sampletestdata[0][index].topic);
       readingDiff.push(sampletestdata[0][index].difficulty);
+      console.log(selectedTest.answers[index]);
+      wrongAnswers.push([index, selectedTest.answers[index]]);
     }
   });
+
+  console.log(wrongAnswers)
+
 
   selectedTest.answers2.forEach((item: string, index: number) => {
     if (sampletestdata[1][index].answer != selectedTest.answers2[index]) {
       readingTopics.push(sampletestdata[1][index].topic);
       readingDiff.push(sampletestdata[1][index].difficulty);
+      wrongAnswers2.push([index+27, selectedTest.answers2[index]]);
     }
   });
 
@@ -91,6 +104,7 @@ const Score = () => {
               if (a === null || correctAnswer === null) {
                   mathTopics.push(sampletestdata[2][index].topic);
                   mathDiff.push(sampletestdata[2][index].difficulty);
+                  wrongAnswers3.push([index+54, selectedTest.answers3[index]]);
                   return;
               }
           
@@ -99,6 +113,7 @@ const Score = () => {
                   if (a != correctAnswer) {  
                     mathTopics.push(sampletestdata[2][index].topic);
                     mathDiff.push(sampletestdata[2][index].difficulty);
+                    wrongAnswers3.push([index+54, selectedTest.answers3[index]]);
                   }
               } 
               // Convert both user input and correct answer to numbers for comparison
@@ -127,11 +142,13 @@ const Score = () => {
                       if (roundedUserDecimal != roundedCorrectDecimal) {  
                         mathTopics.push(sampletestdata[2][index].topic);
                         mathDiff.push(sampletestdata[2][index].difficulty);
+                        wrongAnswers3.push([index+54, selectedTest.answers3[index]]);
                       } 
                   } catch (error) {
                       console.error(`Invalid input: ${a} or ${correctAnswer}`);
                       mathTopics.push(sampletestdata[2][index].topic);
                       mathDiff.push(sampletestdata[2][index].difficulty);
+                      wrongAnswers3.push([index+54, selectedTest.answers3[index]]);
                   }
               }
           })
@@ -141,6 +158,7 @@ const Score = () => {
               if (a === null || correctAnswer === null) {
                   mathTopics.push(sampletestdata[3][index].topic);
                   mathDiff.push(sampletestdata[3][index].difficulty);
+                  wrongAnswers4.push([index+76, selectedTest.answers4[index]]);
                   return;
               }
           
@@ -149,6 +167,7 @@ const Score = () => {
                   if (a != correctAnswer) {  
                       mathTopics.push(sampletestdata[3][index].topic);
                       mathDiff.push(sampletestdata[3][index].difficulty);
+                      wrongAnswers4.push([index+76, selectedTest.answers4[index]]);
                   } 
               } 
               // Convert both user input and correct answer to numbers for comparison
@@ -177,11 +196,13 @@ const Score = () => {
                       if (roundedUserDecimal != roundedCorrectDecimal) {  
                         mathTopics.push(sampletestdata[3][index].topic);
                         mathDiff.push(sampletestdata[3][index].difficulty);
+                        wrongAnswers4.push([index+76, selectedTest.answers4[index]]);
                       } 
                   } catch (error) {
                       console.error(`Invalid input: ${a} or ${correctAnswer}`);
                       mathTopics.push(sampletestdata[3][index].topic);
                       mathDiff.push(sampletestdata[3][index].difficulty);
+                      wrongAnswers4.push([index+76, selectedTest.answers4[index]]);
                   }
               }
           });
@@ -319,7 +340,7 @@ const Score = () => {
             <div className='flex'>
             <p className="text-gray-600 text-2xl">Math: {selectedTest.scores[4]}</p><p className='flex text-gray-500 self-end'>/800</p>
             </div>
-            <p className='text-gray-600 mt-2'>Estimated {getSatPercentile(selectedTest.scores[5])}th Percentile of National Test Scores</p>
+            <p className='text-gray-600 mt-2'>Estimated {getSatPercentile(selectedTest.scores[5])} Percentile (of National Test Scores)</p>
           </div>
         </div>
       </CardContent>
@@ -426,6 +447,72 @@ const Score = () => {
           </CardContent>
         </Card>
       </section>
+
+      <Card className="shadow-lg rounded-lg p-4">
+      <CardHeader>
+        <CardTitle className="text-xl font-bold">Missed Questions</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {wrongAnswers.length > 0 && (
+          <>
+          <div>Module 1</div>
+          <div className="flex gap-1 flex-wrap">
+            {wrongAnswers.map(([index, answer], i) => (
+              <div key={i} className="flex bg-red-200 text-red-800 p-2 rounded-lg  min-w-100px">
+                <span className="font-semibold">{index}:</span>
+                <span>{answer}</span>
+              </div>
+            ))}
+          </div>
+          </>
+        )}
+      </CardContent>
+      <CardContent>
+        {wrongAnswers2.length > 0 && (
+          <>
+          <div>Module 2</div>
+          <div className="flex gap-1 flex-wrap">
+            {wrongAnswers2.map(([index, answer], i) => (
+              <div key={i} className="flex bg-red-200 text-red-800 p-2 rounded-lg  min-w-100px">
+                <span className="font-semibold">{index}:</span>
+                <span>{answer}</span>
+              </div>
+            ))}
+          </div>
+          </>
+        )}
+      </CardContent>
+      <CardContent>
+        {wrongAnswers3.length > 0 && (
+          <>
+          <div>Module 3</div>
+          <div className="flex gap-1 flex-wrap">
+            {wrongAnswers3.map(([index, answer], i) => (
+              <div key={i} className="flex bg-red-200 text-red-800 p-2 rounded-lg  min-w-100px">
+                <span className="font-semibold">{index}:</span>
+                <span>{answer}</span>
+              </div>
+            ))}
+          </div>
+          </>
+        ) }
+      </CardContent>
+      <CardContent>
+        {wrongAnswers4.length > 0 && (
+          <>
+          <div>Module 4</div>
+          <div className="flex gap-1 flex-wrap">
+            {wrongAnswers4.map(([index, answer], i) => (
+              <div key={i} className="flex bg-red-200 text-red-800 p-2 rounded-lg  min-w-100px">
+                <span className="font-semibold">{index}:</span>
+                <span>{answer}</span>
+              </div>
+            ))}
+          </div>
+          </>
+        )}
+      </CardContent>
+    </Card>
 
             <div className='flex'>
             <Button onClick={() => setIsScrollable(!isScrollable)} className="mb-4 mr-4 bg-sky-500">

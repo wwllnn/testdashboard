@@ -15,6 +15,8 @@ interface TestScore {
   complete: boolean;
   docId: string;
   missedQ: number[];
+  email: string;
+  name: string;
 }
 
 // Define Zustand store state and actions

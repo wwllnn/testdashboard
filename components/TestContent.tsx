@@ -6,9 +6,10 @@ import TestBar from './TestBar'
 import { sampletestdata } from '@/lib/data'
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth';
-import { collection, addDoc, serverTimestamp, setDoc, doc, updateDoc } from 'firebase/firestore'
+import { collection, addDoc, serverTimestamp, setDoc, doc, updateDoc, getDoc } from 'firebase/firestore'
 import { useAuthStore } from '@/lib/store';
 import { Fraction } from 'fraction.js';
+
 
 
 
@@ -64,7 +65,7 @@ const TestContent = () => {
             setAnswers2(Array(27).fill(null))
             setAnswers3(Array(22).fill(null))
             setAnswers4(Array(22).fill(null))
-            setSelectedTest(null);
+            setSelectedTest(null)
         };
     }, []);  // Will run when selectedTest changes
 
@@ -303,6 +304,8 @@ const TestContent = () => {
                 // Create a new document
                 const docRef = await addDoc(collection(db, "testScores"), { // Use addDoc instead of doc + setDoc
                     userId: user.uid,
+                    name: user.displayName,
+                    email: user.email,
                     date: serverTimestamp(),
                     answers,
                     answers2,
@@ -311,14 +314,18 @@ const TestContent = () => {
                     scores,
                     test: 'SAT 1',
                     complete: true,
-                    missedQ: missedQuestions
+                    missedQ: missedQuestions,
                 });
                 await updateDoc(docRef, { docId: docRef.id }); // Store doc ID inside the document
+                console.log("New Doc Added:", docRef.id);
+
             } else {
                 // Update existing document
                 const docRef = doc(db, "testScores", selectedTest.docId);
                 await updateDoc(docRef, {
                     userId: user.uid,
+                    name: user.displayName,
+                    email: user.email,
                     date: serverTimestamp(),
                     answers,
                     answers2,
@@ -327,7 +334,8 @@ const TestContent = () => {
                     scores,
                     test: 'SAT 1',
                     complete: true,
-                    missedQ: missedQuestions
+                    missedQ: missedQuestions,
+                    docId: selectedTest.docId
                 });
                 console.log("Document updated successfully:", selectedTest.docId);
             }
@@ -349,10 +357,13 @@ const TestContent = () => {
         let scores = [0, 0, 0]; 
     
         try {
+            console.log(selectedTest)
             if (!selectedTest) {
                 // Create a new document
                 const docRef = await addDoc(collection(db, "testScores"), { // Use addDoc instead of doc + setDoc
                     userId: user.uid,
+                    name: user.displayName,
+                    email: user.email,
                     date: serverTimestamp(),
                     answers,
                     answers2,
@@ -362,9 +373,16 @@ const TestContent = () => {
                     test: 'SAT 1',
                     complete: false,
                     missedQ: missedQuestions
-                });
-    
+                });    
                 await updateDoc(docRef, { docId: docRef.id }); // Store doc ID inside the document
+                const docSnap = await getDoc(docRef);
+
+                console.log("New Doc Added:", docSnap.data());
+                if (docSnap.exists()) {
+                    await setSelectedTest(docSnap.data());
+                }
+                console.log(selectedTest)
+
             } else {
                 // Update existing document
                 const docRef = doc(db, "testScores", selectedTest.docId);
@@ -378,8 +396,10 @@ const TestContent = () => {
                     scores,
                     test: 'SAT 1',
                     complete: false,
-                    missedQ: missedQuestions
+                    missedQ: missedQuestions,
+                    docId: selectedTest.docId
                 });
+
                 console.log("Document updated successfully:", selectedTest.docId);
             }
             toast.success("Test Saved");
@@ -388,6 +408,10 @@ const TestContent = () => {
             console.error("Error saving document:", error);
         }
     };
+
+    const handleTest = () => {
+        console.log(selectedTest);
+    }
     
 
     return (
@@ -423,6 +447,8 @@ const TestContent = () => {
                 </div>
             </div>
             <Button className='bg-gray-800 hover:bg-gray-700' onClick={handleSave}>Save Progress</Button>
+            <Button className='bg-gray-800 hover:bg-gray-700' onClick={handleTest}>test</Button>
+
         </div>
 
         <div>

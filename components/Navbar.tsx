@@ -8,6 +8,7 @@ import { useAuth } from '@/lib/auth'
 const Navbar = () => {
 
   const { user, signOut } = useAuth();
+  console.log(user)
 
   return (
     <div className='bg-blue-800 dark:bg-slate-700 py-5 px-10

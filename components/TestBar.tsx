@@ -61,16 +61,18 @@ const TestBar: React.FC<TestBarProps> = ({ module }) => {
     <>
       <div className='flex justify-between items-center px-10 py-2 mb-4 text-white bg-gray-900'>
         <div>
-          {module == 1 && ( <h1 className='py-2 text-lg font-semibold'>
+          {module == 0 && ( <h1 className='py-2 text-lg font-semibold'>
             Section 1, Module 1: Reading and Writing
           </h1>)}
-          {module == 2 && ( <h1 className='py-2 text-lg font-semibold'>
+          {module == 1 && ( <h1 className='py-2 text-lg font-semibold'>
             Section 1, Module 2: Reading and Writing
           </h1>)}
-          {module == 3 && ( <h1 className='py-2 text-lg font-semibold'>
+          {module == 2 && ( <><h1 className='py-2 text-lg font-semibold'>
             Section 2, Module 1: Math
-          </h1>)}
-          {module == 4 && ( <h1 className='py-2 text-lg font-semibold'>
+          </h1>
+
+          </>)}
+          {module == 3 && ( <h1 className='py-2 text-lg font-semibold'>
             Section 2, Module 2: Math
           </h1>)}
 
@@ -83,14 +85,14 @@ const TestBar: React.FC<TestBarProps> = ({ module }) => {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle className='text-2xl'>Directions</DialogTitle>
-                {(module < 3) && <><DialogDescription className='py-5 text-slate-700 text-md'>
+                {(module < 2) && <><DialogDescription className='py-5 text-slate-700 text-md'>
                   The questions in this section address a number of important reading and writing skills. Each question includes one or more passages, which may include a table or graph. Read each passage and question carefully, and then choose the best answer to the question based on the passage(s).
                 </DialogDescription>
                 
                 <DialogDescription className='text-slate-700 text-lg'>
                   All questions in this section are multiple-choice with four answer choices. Each question has a single best answer.
                 </DialogDescription></>}
-                {(module >= 3) && (
+                {(module >= 2) && (
   <DialogDescription className="py-5 text-slate-700 text-md">
     The questions in this section address a number of important math skills.<br /><br />
     Use of a calculator is permitted for all questions. A reference sheet, calculator, and these directions can be accessed throughout the test.<br /><br />
@@ -117,6 +119,10 @@ const TestBar: React.FC<TestBarProps> = ({ module }) => {
               </DialogHeader>
             </DialogContent>
           </Dialog>
+
+          {module > 1 && <a href="https://www.desmos.com/calculator" target="_blank" rel="noopener noreferrer">
+            <Button className='border-2 ml-2'>Graphing Calculator</Button>
+          </a>}
         </div>
 
         {/* Timer */}
