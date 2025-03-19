@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react'
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Fraction } from 'fraction.js';
+import Latex from 'react-latex-next';
+import "katex/dist/katex.min.css"; // Import KaTeX styles
+
+
 
 
 import { sampletestdata }  from '../lib/data.js'
