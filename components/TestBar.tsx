@@ -51,7 +51,7 @@ const TestBar: React.FC<TestBarProps> = ({ module }) => {
 
   // Exit confirmation dialog
   const handleExit = () => {
-    const confirmExit = window.confirm("Are you sure you want to exit?");
+    const confirmExit = window.confirm("Please make sure you have clicked Save Progress if you wish to save before you exit. ");
     if (confirmExit) {
       window.location.href = "/"; // Redirect to home
     }
@@ -90,12 +90,12 @@ const TestBar: React.FC<TestBarProps> = ({ module }) => {
                 </DialogDescription>
                 
                 <DialogDescription className='text-slate-700 text-lg'>
-                  All questions in this section are multiple-choice with four answer choices. Each question has a single best answer.
+                  All questions in this section are multiple-choice with four answer choices. Each question has a single best answer. You have 32 minutes for this section.
                 </DialogDescription></>}
                 {(module >= 2) && (
   <DialogDescription className="py-5 text-slate-700 text-md">
     The questions in this section address a number of important math skills.<br /><br />
-    Use of a calculator is permitted for all questions. A reference sheet, calculator, and these directions can be accessed throughout the test.<br /><br />
+    Use of a physical or computer calculator is permitted for all questions. A reference sheet, graphing calculator, and these directions can be accessed throughout the test.<br /><br />
     
     Unless otherwise indicated:<br />
     - All variables and expressions represent real numbers.<br />
@@ -111,7 +111,9 @@ const TestBar: React.FC<TestBarProps> = ({ module }) => {
     - If your answer is a fraction that doesn’t fit in the provided space, enter the decimal equivalent.<br />
     - If your answer is a decimal that doesn’t fit in the provided space, enter it by truncating or rounding at the fourth digit.<br />
     - If your answer is a mixed number, enter it as an improper fraction (7/2) or its decimal equivalent (3.5).<br />
-    - Don’t enter symbols such as a percent sign, comma, or dollar sign.
+    - Don’t enter symbols such as a percent sign, comma, or dollar sign. <br />
+
+    You have 35 minutes for this section.
   </DialogDescription>
 )}
 

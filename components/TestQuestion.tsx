@@ -46,7 +46,10 @@ const TestQuestion: React.FC<testQuestiondProps> = ({module, number, answers, ha
     return (
     <div className='text-gray-100 flex p-6 my-5 mx-48 bg-gray-800 rounded-lg h-[65vh] shadow-lg'>
         <div className='py-5 px-5 flex-1'>
-            <div className='whitespace-pre-wrap'>{number + 1}. {sampletestdata[module][number].passage}</div>
+            <div className='flex'>
+                <div className='whitespace-pre'>{number + 1}. </div>
+                <div className=''> {sampletestdata[module][number].passage}</div>
+            </div>
             <div className='max-w-[650px] max-auto relative m-4 mx-auto'>
             {sampletestdata[module][number].img && <Image
                 src={`/Q${number+1}Mod${module+1}.png`}// Replace with your image path

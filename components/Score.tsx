@@ -438,7 +438,7 @@ const Score = () => {
                   <span className="font-medium">{topic}</span>
                   <span className="whitespace-nowrap">
                     {showPercentages
-                      ? `${calculatePercentage(correct, total)}%`
+                      ? `${calculatePercentage(correct, wrong)}%`
                       : `${correct} / ${wrong}`}
                   </span>
                 </div>

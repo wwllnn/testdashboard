@@ -408,10 +408,6 @@ const TestContent = () => {
             console.error("Error saving document:", error);
         }
     };
-
-    const handleTest = () => {
-        console.log(selectedTest);
-    }
     
 
     return (
@@ -447,7 +443,6 @@ const TestContent = () => {
                 </div>
             </div>
             <Button className='bg-gray-800 hover:bg-gray-700' onClick={handleSave}>Save Progress</Button>
-            <Button className='bg-gray-800 hover:bg-gray-700' onClick={handleTest}>test</Button>
 
         </div>
 
