@@ -15,6 +15,10 @@ const ScoresPage = () => {
     if (userUid) fetchScores();
   }, [userUid, fetchScores]);
 
+  useEffect(() => {
+      setSelectedTest(null)
+  }, [])
+
   if (loading) return <div className="flex justify-center items-center h-screen"><Loader2 className="animate-spin h-8 w-8 text-gray-500" /></div>;
   if (error) return <p className="text-red-500 text-center">{error}</p>;
   if (scores.length === 0) return <p className="text-center text-gray-500 mt-5">No test scores available.</p>;

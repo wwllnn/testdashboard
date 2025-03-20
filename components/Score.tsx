@@ -19,19 +19,19 @@ const breeSerif = Bree_Serif({
 });
 
 const Score = () => {
-  const { selectedTest } = useAuthStore();
+  const { selectedTest, setSelectedTest } = useAuthStore();
   const router = useRouter();
   const [isScrollable, setIsScrollable] = useState(true);
   const [showPercentages, setShowPercentages] = useState(false);
 
 
-
-
   useEffect(() => {
-    if (!selectedTest) {
-      router.push('/'); // Redirect if no test is selected
-    }
-  }, [selectedTest, router]);
+    console.log(selectedTest);
+  }, [])
+
+
+
+
 
   if (!selectedTest) return <p className="text-center mt-5">Loading test details...</p>;
 
@@ -80,12 +80,10 @@ const Score = () => {
     if (sampletestdata[0][index].answer != selectedTest.answers[index]) {
       readingTopics.push(sampletestdata[0][index].topic);
       readingDiff.push(sampletestdata[0][index].difficulty);
-      console.log(selectedTest.answers[index]);
       wrongAnswers.push([index, selectedTest.answers[index]]);
     }
   });
 
-  console.log(wrongAnswers)
 
 
   selectedTest.answers2.forEach((item: string, index: number) => {
@@ -410,13 +408,12 @@ const Score = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             {Array.from(zippedReadingTopicsMap.entries()).map(([topic, [wrong, correct]]) => {
-              const total = correct + wrong;
               return (
                 <div key={topic} className="flex justify-between">
                   <span className="font-medium">{topic}</span>
                   <span>
                     {showPercentages
-                      ? `${calculatePercentage(correct, total)}%`
+                      ? `${calculatePercentage(correct, wrong)}%`
                       : `${correct} / ${wrong}`}
                   </span>
                 </div>
@@ -432,7 +429,6 @@ const Score = () => {
           </CardHeader>
           <CardContent className={`space-y-4 ${isScrollable ? "max-h-[500px] overflow-y-auto" : ""}`}>
             {Array.from(zippedMathTopicsMap.entries()).map(([topic, [wrong, correct]]) => {
-              const total = correct + wrong;
               return (
                 <div key={topic} className="flex justify-between">
                   <span className="font-medium">{topic}</span>
