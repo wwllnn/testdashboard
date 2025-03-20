@@ -3,6 +3,7 @@ import { auth, db } from './firebase'; // Adjust path based on your project stru
 import { collection, getDocs, query, where, DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 
+
 // Define the TestScore type
 export interface TestScore {
   userId: string;
@@ -56,6 +57,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       set({ loading: true });
 
+      const user = auth.currentUser; // Get authenticated user
+      const email = user?.email ?? "No Email";
+      const name = user?.displayName ?? "Anonymous"; // Default values if missing
+
       const testsQuery = query(collection(db, 'testScores'), where('userId', '==', userUid), where("complete", "==", true));
       const querySnapshot = await getDocs(testsQuery);
 
@@ -69,7 +74,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         scores: doc.data().scores,
         complete: doc.data().complete,
         docId: doc.data().docId,
-        missedQ: doc.data().missedQ
+        missedQ: doc.data().missedQ,
+        email,
+        name
       }));
 
       // Sort scores by date (latest first)
@@ -91,6 +98,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       set({ loading: true });
 
+      const user = auth.currentUser; // Get authenticated user
+      const email = user?.email ?? "No Email";
+      const name = user?.displayName ?? "Anonymous"; // Default values if missing
+
       const incompleteQuery = query(
         collection(db, "testScores"),
         where("userId", "==", userUid),
@@ -108,7 +119,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         scores: doc.data().scores,
         complete: doc.data().complete,
         docId: doc.data().docId,
-        missedQ: doc.data().missedQ
+        missedQ: doc.data().missedQ,
+        email,
+        name
       }));
 
       // Sort incomplete scores by date (latest first)
