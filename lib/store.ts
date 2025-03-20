@@ -4,7 +4,7 @@ import { collection, getDocs, query, where, DocumentData, QueryDocumentSnapshot 
 import { onAuthStateChanged } from 'firebase/auth';
 
 // Define the TestScore type
-interface TestScore {
+export interface TestScore {
   userId: string;
   date: { seconds: number; nanoseconds: number };
   answers: any;

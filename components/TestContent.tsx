@@ -9,6 +9,7 @@ import { useAuth } from '@/lib/auth';
 import { collection, addDoc, serverTimestamp, setDoc, doc, updateDoc, getDoc } from 'firebase/firestore'
 import { useAuthStore } from '@/lib/store';
 import { Fraction } from 'fraction.js';
+import { TestScore } from "../lib/store"; 
 
 
 
@@ -379,7 +380,7 @@ const TestContent = () => {
 
                 console.log("New Doc Added:", docSnap.data());
                 if (docSnap.exists()) {
-                    await setSelectedTest(docSnap.data());
+                    await setSelectedTest(docSnap.data() as TestScore);
                 }
                 console.log(selectedTest)
 
