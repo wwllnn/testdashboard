@@ -122,6 +122,20 @@ const TestBar: React.FC<TestBarProps> = ({ module }) => {
             </DialogContent>
           </Dialog>
 
+          <Dialog>
+          <DialogTrigger asChild>
+            <Button className='border-2 ml-2'>Formulas</Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-5xl p-4 flex justify-center">
+          <DialogTitle></DialogTitle>
+            <img
+              src="formulas.png"
+              alt="formula"
+              className="rounded-lg w-full h-auto"
+            />
+          </DialogContent>
+          </Dialog>
+
           {module > 1 && <a href="https://www.desmos.com/calculator" target="_blank" rel="noopener noreferrer">
             <Button className='border-2 ml-2'>Graphing Calculator</Button>
           </a>}
