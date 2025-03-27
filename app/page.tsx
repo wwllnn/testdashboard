@@ -48,7 +48,9 @@ export default function Home() {
           <div className="bg-white max-w-4xl text-gray-800 p-8 rounded-xl shadow-2xl">
             <h1 className="text-3xl font-bold mb-6">Digital SAT Diagnostic Tool</h1>
             <div className="">
+            <h1 className="text-2xl font-bold mb-6 text-black">⌛️ Tests In Progress</h1>
             <TestsInProgress />
+            <h1 className="text-2xl font-bold text-black">📊 Recent Test Scores</h1>
             <TestScores />
             
             </div>
@@ -93,12 +95,14 @@ export default function Home() {
       )}
     
       <section className="container mx-auto py-12 px-40">
-      <Card className="bg-white hover:shadow-2xl transform hover:scale-105 transition duration-300 cursor-default">
+      <a href="https://www.educate-one.com" target="_blank" rel="noopener noreferrer">
+        <Card className="bg-white hover:shadow-2xl transform hover:scale-105 transition duration-300 cursor-pointer">
             <CardContent className="p-8 text-center">
               <h3 className="text-2xl font-semibold text-gray-800 mb-4">🚀 Improve Faster</h3>
-              <p className="text-gray-600">Need more help? Email or call our professional SAT team with 3 decades of SAT experience to go through any question and receive recommendations to boost your performance efficiently.</p>
+              <p className="text-gray-600">Need more help? Visit us at educate-one.com or email us at william@educate-one.com! Our professional SAT team with decades of SAT experience are ready to answer any question and give you recommendations to boost your performance efficiently.</p>
             </CardContent>
-          </Card>
+        </Card>
+      </a>
       </section>
 
 
@@ -133,10 +137,11 @@ export default function Home() {
           <div className="flex justify-center gap-6 mb-6">
             <a href="#" className="text-2xl hover:text-gray-400 transition duration-300"><FaFacebook /></a>
             <a href="#" className="text-2xl hover:text-gray-400 transition duration-300"><FaTwitter /></a>
-            <a href="#" className="text-2xl hover:text-gray-400 transition duration-300"><FaInstagram /></a>
+            <a href="https://www.instagram.com/educationonesugarland/" className="text-2xl hover:text-gray-400 transition duration-300"><FaInstagram /></a>
           </div>
           <p className="text-sm text-gray-400">&copy; {new Date().getFullYear()} Education One. All rights reserved.</p>
-        </div>
+          <a href="https://www.educate-one.com" className="text-2xl hover:text-gray-400 transition duration-300">Education One</a>
+          </div>
       </footer>
     </div>
   );

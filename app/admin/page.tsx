@@ -40,7 +40,7 @@ export default function AdminPage() {
   // Handle login
   const handleLogin = (e?: React.FormEvent) => {
     if (e) e.preventDefault(); // Prevent form reload
-    if (password === ADMIN_PASSWORD) {
+    if (password === 'nayolceo') {
       setAuthenticated(true);
       fetchAllScores();
     } else {

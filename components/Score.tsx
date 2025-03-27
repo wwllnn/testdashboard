@@ -11,6 +11,10 @@ import { Bree_Serif } from 'next/font/google';
 import { CiSaveDown2 } from "react-icons/ci";
 import { useState } from 'react';
 import Fraction from 'fraction.js';
+import { useAuth } from '@/lib/auth'
+import UserProfileForm from './UserProfileForm';
+
+
 
 
 const breeSerif = Bree_Serif({
@@ -19,15 +23,13 @@ const breeSerif = Bree_Serif({
 });
 
 const Score = () => {
+  const { user, userData } = useAuth();
+
   const { selectedTest, setSelectedTest } = useAuthStore();
   const router = useRouter();
   const [isScrollable, setIsScrollable] = useState(true);
   const [showPercentages, setShowPercentages] = useState(false);
 
-
-  useEffect(() => {
-    console.log(selectedTest);
-  }, [])
 
 
 

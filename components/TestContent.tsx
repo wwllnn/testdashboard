@@ -316,6 +316,7 @@ const TestContent = () => {
                     test: 'SAT 1',
                     complete: true,
                     missedQ: missedQuestions,
+                    module: module
                 });
                 await updateDoc(docRef, { docId: docRef.id }); // Store doc ID inside the document
                 console.log("New Doc Added:", docRef.id);
@@ -412,7 +413,7 @@ const TestContent = () => {
     
 
     return (
-        <div className='bg-gray-900 h-full'>
+        <div className='bg-gray-900 min-h-screen h-full'>
         <TestBar module={module}/>
         <div className='flex justify-center items-center'>
             <div className='flex justify-center mr-10'>

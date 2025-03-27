@@ -18,7 +18,6 @@ const TestsInProgress = () => {
 
   return (
     <div className="p-6 text-white">
-      <h1 className="text-2xl font-bold mb-6 text-black">⌛️ Tests In Progress</h1>
       <div className="overflow-x-auto">
         <div className="flex gap-4 w-max pb-2">
           {incompleteScores.map((score, index) => (

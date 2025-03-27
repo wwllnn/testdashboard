@@ -4,6 +4,13 @@ import Link from 'next/link'
 import Image from 'next/image'
 import logo from '../img/logo.png'
 import { useAuth } from '@/lib/auth'
+import { Bree_Serif } from 'next/font/google';
+
+const breeSerif = Bree_Serif({
+  subsets: ['latin'],
+  weight: '400', // Available weight for Bree Serif
+});
+
 
 const Navbar = () => {
 
@@ -11,15 +18,15 @@ const Navbar = () => {
   console.log(user)
 
   return (
-    <div className='bg-blue-800 dark:bg-slate-700 py-5 px-10
-    flex justify-between items-center border-b-4 border-gray-100 shadow-[0_4px_8px_rgba(0,0,0,0.3)] z-10'>
+    <div className={`bg-blue-800 dark:bg-slate-700 py-5 px-10
+    flex justify-between items-center border-b-4 border-gray-100 shadow-[0_4px_8px_rgba(0,0,0,0.3)] z-10 ${breeSerif.className}`}>
         <Link href='/'>
             <Image src={logo} alt='logo' className='w-36 align-center'/>
         </Link>
         <div className="flex items-center space-x-4">
           {user ? (
             <>
-              <span className="text-lg text-white">Hello, {user.displayName || user.email}</span>
+              <span className="text-lg text-white font">Welcome, {user.displayName || user.email}</span>
               <button
                 onClick={signOut}
                 className="bg-red-700 px-4 py-2 rounded hover:bg-red-600 text-white"

@@ -27,7 +27,6 @@ const ScoresPage = () => {
 
   return (
     <div className="p-6 text-white">
-      <h1 className="text-2xl font-bold mb-6 text-black">📊 Recent Test Scores</h1>
       <div className="overflow-x-auto">
         <div className="flex gap-4 w-max pb-2">
           {scores.map((score, index) => (
