@@ -35,7 +35,7 @@ const PDFDownloadButton = ({
     >
       
       {({ loading }) => (
-        loading ? 'Preparing PDF...' : 'Download PDF Report')}
+        loading ? 'Preparing PDF...' : 'Download PDF Summary')}
     </PDFDownloadLink>
   );
 };
