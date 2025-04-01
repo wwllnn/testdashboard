@@ -126,12 +126,12 @@ const TestBar: React.FC<TestBarProps> = ({ module }) => {
           <DialogTrigger asChild>
             <Button className='border-2 ml-2'>Formulas</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-5xl p-4 flex justify-center">
+          <DialogContent className="max-w-3xl p-12 flex justify-center">
           <DialogTitle></DialogTitle>
             <img
-              src="formulas.png"
+              src="formulachart.png"
               alt="formula"
-              className="rounded-lg w-full h-auto"
+              className="rounded-lg w-100 h-auto"
             />
           </DialogContent>
           </Dialog>
