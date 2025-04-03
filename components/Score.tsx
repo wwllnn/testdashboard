@@ -125,7 +125,7 @@ const Score = () => {
               {Array.from(map.entries()).map(([topic, [total, correct]]) => (
                 <div key={topic} className="flex justify-between">
                   <span className="font-medium">{topic}</span>
-                  <span>{showPercentages ? `${calculatePercentage(correct, total)}%` : `${correct} / ${total}`}</span>
+                  <span className="whitespace-nowrap">{showPercentages ? `${calculatePercentage(correct, total)}%` : `${correct} / ${total}`}</span>
                 </div>
               ))}
             </CardContent>
