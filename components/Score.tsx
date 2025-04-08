@@ -145,7 +145,7 @@ const Score = () => {
            <div className="flex gap-1 flex-wrap">
              {wrongAnswers.map(([index, answer], i) => (
                <div key={i} className="flex bg-red-200 text-red-800 p-2 rounded-lg  min-w-100px">
-                 <span className="font-semibold">{index}:</span>
+                 <span className="font-semibold">{index+1}:</span>
                  <span>{answer}</span>
                </div>
              ))}
@@ -160,7 +160,7 @@ const Score = () => {
            <div className="flex gap-1 flex-wrap">
              {wrongAnswers2.map(([index, answer], i) => (
                <div key={i} className="flex bg-red-200 text-red-800 p-2 rounded-lg  min-w-100px">
-                 <span className="font-semibold">{index}:</span>
+                 <span className="font-semibold">{index+1}:</span>
                  <span>{answer}</span>
                </div>
              ))}
@@ -175,7 +175,7 @@ const Score = () => {
            <div className="flex gap-1 flex-wrap">
              {wrongAnswers3.map(([index, answer], i) => (
                <div key={i} className="flex bg-red-200 text-red-800 p-2 rounded-lg  min-w-100px">
-                 <span className="font-semibold">{index}:</span>
+                 <span className="font-semibold">{index+1}:</span>
                  <span>{answer}</span>
                </div>
              ))}
@@ -190,7 +190,7 @@ const Score = () => {
            <div className="flex gap-1 flex-wrap">
              {wrongAnswers4.map(([index, answer], i) => (
                <div key={i} className="flex bg-red-200 text-red-800 p-2 rounded-lg  min-w-100px">
-                 <span className="font-semibold">{index}:</span>
+                 <span className="font-semibold">{index+1}:</span>
                  <span>{answer}</span>
                </div>
              ))}
