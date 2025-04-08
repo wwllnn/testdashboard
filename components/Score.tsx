@@ -55,7 +55,8 @@ const Score = () => {
   const mathTopics = [...m1, ...m2];
   const mathDiff = [...mD1, ...mD2];
 
-  const wrongAnswers = [...wrong1, ...wrong2];
+  const wrongAnswers = [...wrong1];
+  const wrongAnswers2 = [...wrong2];
   const wrongAnswers3 = [...wrong3];
   const wrongAnswers4 = [...wrong4];
 
@@ -132,6 +133,72 @@ const Score = () => {
           </Card>
         ))}
       </section>
+
+      <Card className="shadow-lg rounded-lg p-4">
+       <CardHeader>
+         <CardTitle className="text-xl font-bold">Missed Questions</CardTitle>
+       </CardHeader>
+       <CardContent>
+         {wrongAnswers.length > 0 && (
+           <>
+           <div>Module 1</div>
+           <div className="flex gap-1 flex-wrap">
+             {wrongAnswers.map(([index, answer], i) => (
+               <div key={i} className="flex bg-red-200 text-red-800 p-2 rounded-lg  min-w-100px">
+                 <span className="font-semibold">{index}:</span>
+                 <span>{answer}</span>
+               </div>
+             ))}
+           </div>
+           </>
+         )}
+       </CardContent>
+       <CardContent>
+         {wrongAnswers2.length > 0 && (
+           <>
+           <div>Module 2</div>
+           <div className="flex gap-1 flex-wrap">
+             {wrongAnswers2.map(([index, answer], i) => (
+               <div key={i} className="flex bg-red-200 text-red-800 p-2 rounded-lg  min-w-100px">
+                 <span className="font-semibold">{index}:</span>
+                 <span>{answer}</span>
+               </div>
+             ))}
+           </div>
+           </>
+         )}
+       </CardContent>
+       <CardContent>
+         {wrongAnswers3.length > 0 && (
+           <>
+           <div>Module 3</div>
+           <div className="flex gap-1 flex-wrap">
+             {wrongAnswers3.map(([index, answer], i) => (
+               <div key={i} className="flex bg-red-200 text-red-800 p-2 rounded-lg  min-w-100px">
+                 <span className="font-semibold">{index}:</span>
+                 <span>{answer}</span>
+               </div>
+             ))}
+           </div>
+           </>
+         ) }
+       </CardContent>
+       <CardContent>
+         {wrongAnswers4.length > 0 && (
+           <>
+           <div>Module 4</div>
+           <div className="flex gap-1 flex-wrap">
+             {wrongAnswers4.map(([index, answer], i) => (
+               <div key={i} className="flex bg-red-200 text-red-800 p-2 rounded-lg  min-w-100px">
+                 <span className="font-semibold">{index}:</span>
+                 <span>{answer}</span>
+               </div>
+             ))}
+           </div>
+           </>
+         )}
+       </CardContent>
+     </Card>
 
       <div className='flex'>
         <Button onClick={() => setIsScrollable(!isScrollable)} className="mb-4 mr-4 bg-sky-500">
