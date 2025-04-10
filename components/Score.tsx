@@ -4,13 +4,12 @@
 import { useAuthStore } from '@/lib/store';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useAuth } from '@/lib/auth';
 import { sampletestdata } from '@/lib/data';
 import { Bree_Serif } from 'next/font/google';
 import { ArrowLeft } from 'lucide-react';
-import { CiSaveDown2 } from "react-icons/ci";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useEffect } from 'react';
 
  
 // Utilities
@@ -26,13 +25,20 @@ import PDFDownloadButton from './PDFDownloadButton';
 const breeSerif = Bree_Serif({ subsets: ['latin'], weight: '400' });
 
 const Score = () => {
-  const { user, userData } = useAuth();
   const { selectedTest } = useAuthStore();
   const router = useRouter();
   const [isScrollable, setIsScrollable] = useState(true);
   const [showPercentages, setShowPercentages] = useState(false);
 
+  useEffect(() => {
+    if (!selectedTest) {
+      router.push('/');
+    }
+  }, [selectedTest]);
+
   if (!selectedTest) return <p className="text-center mt-5">Loading test details...</p>;
+
+
 
   const testDate = new Date(selectedTest.date.seconds * 1000).toLocaleDateString(undefined, {
     year: 'numeric',

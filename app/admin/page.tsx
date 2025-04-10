@@ -1,15 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
-import { db } from "../../lib/firebase"; // Adjust this path if needed
-import { useAuthStore } from '@/lib/store';
+import { db } from "../../lib/firebase";
+import { useAuthStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth";
+import { Roboto } from 'next/font/google';
+import { Bree_Serif } from 'next/font/google';
 
 
-const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+});
 
-// Define TestScore type
+const breeSerif = Bree_Serif({ subsets: ['latin'], weight: '400' });
+
+
 interface TestScore {
   id: string;
   userId: string;
@@ -26,41 +34,47 @@ interface TestScore {
   email: string;
 }
 
-export default function AdminPage() {
-    const { setSelectedTest } = useAuthStore();
-    const router = useRouter();
+const ADMIN_EMAILS = ["william@educate-one.com", 
+  "vvllxn@gmail.com", 
+  "sugarland@educate-one.com",
+  "nayolyi@educate-one.com",
+  "s.james@educate-one.com",
+  "matt.shafer@educate-one.com",
+  "ross.c@educate-one.com",
+  "tutor6@educate-one.com"
+];
 
-    
-  const [password, setPassword] = useState("");
-  const [authenticated, setAuthenticated] = useState(false);
+export default function AdminPage() {
+  const { user, loading: authLoading } = useAuth();
+  const { setSelectedTest } = useAuthStore();
+  const router = useRouter();
+
   const [scores, setScores] = useState<TestScore[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Handle login
-  const handleLogin = (e?: React.FormEvent) => {
-    if (e) e.preventDefault(); // Prevent form reload
-    if (password === 'nayolceo') {
-      setAuthenticated(true);
-      fetchAllScores();
-    } else {
-      alert("Incorrect password!");
-    }
-  };
+  const [currentPage, setCurrentPage] = useState(0);
+  const pageSize = 10;
 
-  // Fetch test scores from Firestore
+  useEffect(() => {
+    if (authLoading) return;
+
+    if (!user || !ADMIN_EMAILS.includes(user.email || "")) {
+      router.push("/");
+      return;
+    }
+
+    fetchAllScores();
+  }, [user, authLoading]);
+
   const fetchAllScores = async () => {
     try {
       setLoading(true);
-
-      // Firestore query: Order by date (latest first)
       const scoresQuery = query(collection(db, "testScores"), orderBy("date", "desc"));
       const querySnapshot = await getDocs(scoresQuery);
-
       const scoresData: TestScore[] = querySnapshot.docs.map((doc) => ({
         ...(doc.data() as TestScore),
       }));
-
       setScores(scoresData);
       setLoading(false);
     } catch (err) {
@@ -69,72 +83,80 @@ export default function AdminPage() {
     }
   };
 
-  // Login form
-  if (!authenticated) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h2 className="text-xl font-bold">Admin Login</h2>
-
-        <form onSubmit={handleLogin} className="flex flex-col items-center">
-          <input
-            type="password"
-            placeholder="Enter password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border p-2 mt-4"
-          />
-          <button type="submit" className="bg-blue-500 text-white p-2 mt-2">
-            Login
-          </button>
-        </form>
-      </div>
-    );
+  if (authLoading || loading) {
+    return <div className="p-4">Loading admin dashboard...</div>;
   }
 
-  // Admin Dashboard
-  return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+  const paginatedScores = scores.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
+  const totalPages = Math.ceil(scores.length / pageSize);
 
-      {loading && <p>Loading...</p>}
+  return (
+    <div className={`${roboto.className} pl-64 pr-64 pt-10`}>
+      <h1 className="text-2xl font-bold">Recent Student Tests</h1>
+
       {error && <p className="text-red-500">{error}</p>}
 
-      <table className="w-full border border-gray-700 mt-4">
-        <thead className="bg-blue-500 text-white">
-          <tr>
-            <th className="border p-2">Name</th>
-            <th className="border p-2">Email</th>
-            <th className="border p-2">Date & Time</th>
-            <th className="border p-2">Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          {scores.map((score) => (
-            <tr key={score.docId} className="cursor-pointer hover:bg-gray-200" onClick={() => {
-                setSelectedTest(score);
-                router.push(`/breakdown/${score.docId}`);
-              }}>
-              <td className="border p-2">{score.name}</td>
-              <td className="border p-2">{score.email}</td>
-
-              <td className="border p-2">
-              {new Date(score.date.seconds * 1000).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric"
-                })}{" "}
-                <br/>
-                {new Date(score.date.seconds * 1000).toLocaleTimeString("en-US", {
-                  hour: "numeric", // 🔹 Use "numeric" instead of "2-digit" to remove leading zero
-                  minute: "2-digit",
-                  hour12: true
-                })}         
-              </td>
-              <td className="border p-2">{score.scores[5]}</td>
+      <div className="mt-4 border-2 border-gray-300 rounded-xl overflow-hidden shadow-sm">
+        <table className="min-w-full border-collapse table-fixed bg-white text-sm text-gray-800 border-2 border-gray-300">
+          <thead className="text-gray-400 font-semibold bg-gray-100">
+            <tr>
+              <th className="p-3 text-left border-2 border-gray-300">NAME</th>
+              <th className="p-3 text-left border-2 border-gray-300">EMAIL</th>
+              <th className="p-3 text-left border-2 border-gray-300">DATE</th>
+              <th className="p-3 text-left border-2 border-gray-300">SCORE</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y divide-gray-200 font-medium">
+            {paginatedScores.map((score) => (
+              <tr
+                key={score.docId}
+                className="cursor-pointer hover:bg-gray-100 transition duration-150"
+                onClick={() => {
+                  setSelectedTest(score);
+                  router.push(`/breakdown/${score.docId}`);
+                }}
+              >
+                <td className="p-3 border-2 border-gray-300">{score.name}</td>
+                <td className="p-3 border-2 border-gray-300">{score.email}</td>
+                <td className="p-3 border-2 border-gray-300">
+                  {new Date(score.date.seconds * 1000).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric"
+                  })}<br />
+                  {new Date(score.date.seconds * 1000).toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true
+                  })}
+                </td>
+                <td className="p-3 border-2 border-gray-300">{score.scores[5]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Pagination Controls */}
+        <div className="flex justify-between items-center px-4 py-3 bg-white border-t border-gray-200">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+            disabled={currentPage === 0}
+            className="text-sm font-medium text-blue-600 disabled:text-gray-300"
+          >
+            ← Previous
+          </button>
+          <span className="text-sm text-gray-600">
+            Page {currentPage + 1} of {totalPages}
+          </span>
+          <button
+            onClick={() => setCurrentPage((prev) => (prev + 1 < totalPages ? prev + 1 : prev))}
+            disabled={currentPage + 1 >= totalPages}
+            className="text-sm font-medium text-blue-600 disabled:text-gray-300"
+          >
+            Next →
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

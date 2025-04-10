@@ -9,7 +9,6 @@ const ScoresPage = () => {
   const { scores, loading, error, fetchScores, setSelectedTest, userUid } = useAuthStore();
   const router = useRouter();
 
-  const createScore = (r: number, m: number) => r + m;
 
   useEffect(() => {
     if (userUid) fetchScores();

@@ -1,9 +1,21 @@
 "use client";
+
 import React, { useState } from "react";
-import { useAuth } from "../../lib/auth"; // Import the custom hook
+import { useAuth } from "../../lib/auth"; // Custom auth context
 import { signInWithPopup } from "firebase/auth";
 import { googleProvider, auth } from "../../lib/firebase";
-import { useRouter } from "next/navigation"; // For redirecting
+import { useRouter } from "next/navigation";
+
+// List of allowed admin emails
+const ADMIN_EMAILS = ["william@educate-one.com", 
+  "vvllxn@gmail.com", 
+  "sugarland@educate-one.com",
+  "nayolyi@educate-one.com",
+  "s.james@educate-one.com",
+  "matt.shafer@educate-one.com",
+  "ross.c@educate-one.com",
+  "tutor6@educate-one.com"
+];
 
 const Login = () => {
   const [error, setError] = useState("");
@@ -11,18 +23,21 @@ const Login = () => {
   const { user } = useAuth(); // Access user from context
   const router = useRouter();
 
-  // Redirect if the user is already logged in
-
   const handleGoogleLogin = async () => {
     setLoading(true);
     setError("");
 
     try {
-      // Sign in with Google
       const result = await signInWithPopup(auth, googleProvider);
-      console.log(result.user); // You can access the signed-in user's info here (e.g. result.user)
+      const email = result.user.email || "";
 
-      router.push("/"); // Redirect to homepage after successful login
+      // Redirect based on admin status
+      if (ADMIN_EMAILS.includes(email)) {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
+
     } catch (error) {
       const err = error as Error;
       setLoading(false);

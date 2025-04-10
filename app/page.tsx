@@ -47,6 +47,7 @@ export default function Home() {
         <section className="container mx-auto py-16 px-6 text-center flex justify-center">
           <div className="bg-white max-w-4xl text-gray-800 p-8 rounded-xl shadow-2xl">
             <h1 className="text-3xl font-bold mb-6">Digital SAT Diagnostic Tool</h1>
+            
             <div className="">
             <h1 className="text-2xl font-bold mb-6 text-black">⌛️ Tests In Progress</h1>
             <TestsInProgress />
